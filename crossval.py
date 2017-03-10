@@ -4,7 +4,6 @@ import pprint, itertools, pickle
 import numpy as np
 import pandas as pd
 from collections import defaultdict
-from sklearn.cross_validation import StratifiedKFold
 from sklearn.feature_selection import SelectKBest
 from sklearn.model_selection import StratifiedKFold
 
@@ -38,29 +37,26 @@ def CVSetup():
     with open('data_dict.pickle', 'rb') as f:
         data_dict= pickle.load(f)
     
-#    X= np.array([])
-#    y= np.array([])
-    #Does np.array need the [] inside ()?
+    outer_cv={'X_train': [], 'X_test': [],
+              'y_train': [], 'y_test': []}
+
     X= np.array(group)
-    y= np.array([])
-    for i in range(len(group)):
-        np.append(y, data_dict['group type'][i])
+    y= np.array([data_dict['group type'][i] for i in group])
     
     X_train, X_test, y_train, y_test= [], [], [], []      
 
     skf = StratifiedKFold(n_splits=5)
-    skf.get_n_splits(X, y)
     
     for train_index, test_index in skf.split(X,y):
         print("TRAIN:", train_index, "\nTEST:", test_index)
         X_train, X_test= X[train_index], X[test_index]
-        y_train, y_test= y[train_index], y_test.append(y[test_index])
+        y_train, y_test= y[train_index], y[test_index]
     
-    outer_cv= {'X_train': np.array(X_train),
-               'X_test': np.array(X_test),
-               'y_train': np.array(y_train),
-               'y_test': np.array(y_test)}
-    #hoping this will let me pull the indices in each X_train fold directly from data_dict['data'] to make it easier to get all the vectors into the feature select & further steps
+        outer_cv['X_train'].append(X_train)
+        outer_cv['X_test'].append(X_test)
+        outer_cv['y_train'].append(y_train)
+        outer_cv['y_test'].append(y_test)
+
     with open('outer_cv.pickle', 'wb') as f:
         pickle.dump(outer_cv, f, pickle.HIGHEST_PROTOCOL) 
 
@@ -68,8 +64,11 @@ def CVSetup():
     
 def InnerCv():
     '''Set up as a flat structure of 25 df'''
-    with open('pickles/outer_cv.pickle', 'rb') as f:
+    with open('outer_cv.pickle', 'rb') as f:
         outer_cv= pickle.load(f)
+
+    inner_cv={'X_train': [], 'X_test': [],
+              'y_train': [], 'y_test': []}
     
     X= outer_cv['X_train']
     y= outer_cv['y_train']
@@ -77,20 +76,20 @@ def InnerCv():
     X_train, X_test, y_train, y_test = [], [], [], []
 
     #read loop as, "for each pair of X and y lists in (X,y)"
+    
     for X_, y_ in zip(X, y): 
-        inner = StratifiedKFold(y_, n_folds=5)
-        for train_index, test_index in inner:      
-            X_train.append(X_[train_index])
-            X_test.append(X_[test_index])
-            y_train.append(y_[train_index])
-            y_test.append(y_[test_index]) 
+        skf = StratifiedKFold(n_splits=5)
+        for train_index, test_index in skf.split(X_,y_):      
+            print("TRAIN:", train_index, "\nTEST:", test_index)
+            X_train, X_test= X_[train_index], X_[test_index]
+            y_train, y_test= y_[train_index], y_[test_index]
 
-    inner_cv= {'X_train': X_train,
-               'X_test': X_test,
-               'y_train': y_train,
-               'y_test': y_test}
+            inner_cv['X_train'].append(X_train)
+            inner_cv['X_test'].append(X_test)
+            inner_cv['y_train'].append(y_train)
+            inner_cv['y_test'].append(y_test)
 
-    with open('pickles/inner_cv.pickle', 'wb') as f:
+    with open('inner_cv.pickle', 'wb') as f:
         pickle.dump(inner_cv, f, pickle.HIGHEST_PROTOCOL) 
     
     return
