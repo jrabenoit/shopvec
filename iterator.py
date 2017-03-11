@@ -7,14 +7,15 @@ import pandas as pd
 from collections import defaultdict
 
 def TryMLTools():    
+
     features_set= inspect.getmembers(features, inspect.isfunction)
     transform_set= inspect.getmembers(transform, inspect.isfunction)
     estimators_set= inspect.getmembers(estimators, inspect.isfunction)
     
-    try_sets= list(itertools.product(features_set, transform_set, estimators_set))
+    sets= list(itertools.product(features_set, transform_set, estimators_set))
     
-    for i in range(len(try_sets)):
-        this_set= str(sets[i][0][0]+ ', '+ sets[i][1][0]+ ', '+ sets[i][2][0])
+    for i in range(len(sets)):
+        seti= str(sets[i][0][0]+ ', '+ sets[i][1][0]+ ', '+ sets[i][2][0])
         print('Set: {}'.format(seti))
         inner_cv= sets[i][0][1]()
         inner_cv= sets[i][1][1]()

@@ -6,8 +6,9 @@ import copy, pickle
 def NullTransform():
     return
 
+'''
 def FastIca():
-    '''ICA on whole dataset... constrain to each inner loop training set next'''
+    #ICA on whole dataset... constrain to each inner loop training set next
     with open('pickles/data_dict.pickle','rb') as f:
         data_dict=pickle.load(f)
     
@@ -22,7 +23,7 @@ def FastIca():
         pickle.dump(ica, f, pickle.HIGHEST_PROTOCOL) 
     
     return
-'''    
+       
 def RPca(iX_train, iX_test, iy_train, iy_test, n_components=3):
     dX_train = copy.copy(iX_train)
     dX_test = copy.copy(iX_test)

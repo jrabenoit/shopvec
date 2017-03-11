@@ -3,7 +3,8 @@
 from operator import itemgetter
 
 #Gives average accuracy of each param set tested on inner loop data
-def InnerAverages(inner_cv, seti):
+def InnerAverages():
+
     X_train= df_inner_cv['X_train_score']
     X_test= df_inner_cv['X_test_score']
     print(X_train.shape)

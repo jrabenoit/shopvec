@@ -1,7 +1,6 @@
 #!/usr/bin/env python3
 
 from sklearn.feature_selection import SelectKBest
-from skimage.feature import hog
 import copy
 import numpy as np
 
