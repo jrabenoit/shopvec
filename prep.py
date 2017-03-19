@@ -27,9 +27,6 @@ def SubjectInfo():
                 'group type':[],
                 'data': []}
     
-    with open('data_dict.pickle', 'wb') as f:
-        pickle.dump(data_dict, f, pickle.HIGHEST_PROTOCOL)  
-    
     #SUBJECT ID
     for i in data_dict['directory']:
         data_dict['subject ID'].append(ntpath.basename
@@ -96,7 +93,7 @@ def SubjectInfo():
     
     #note: haven't done sklearn z-normalization yet- do with final multimodal array
         
-    with open('/media/james/ext4data/current/projects/ramasubbu/16_10_25_ramasubbu_data_preprocessed_scan_removed/data_dict.pickle', 'wb') as d:
+    with open('/media/james/ext4data/current/projects/ramasubbu/data_dict.pickle', 'wb') as d:
         pickle.dump(data_dict, d, pickle.HIGHEST_PROTOCOL) 
         
 #    with open('/media/james/ext4data/current/projects/ramasubbu/16_10_25_ramasubbu_data_preprocessed_scan_removed/data_dict.pickle', 'rb') as f:
