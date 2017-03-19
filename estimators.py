@@ -11,7 +11,7 @@ from sklearn import svm, naive_bayes, neighbors, ensemble, linear_model
 def GauNaiBay():
     with open('/media/james/ext4data/current/projects/ramasubbu/data_dict.pickle','rb') as f:
         data_dict=pickle.load(f)
-    with open('inner_cv.pickle','rb') as f:
+    with open('/media/james/ext4data/current/projects/ramasubbu/inner_cv.pickle','rb') as f:
         inner_cv=pickle.load(f) 
     
     scores= {'train': [], 'test': []}
@@ -25,13 +25,14 @@ def GauNaiBay():
         estimator = naive_bayes.GaussianNB()
         print(len(X_train), len(X_test), len(y_train), len(y_test))
         estimator.fit(X_train, y_train)
+        print(estimator.predict(X_test))
         scores['train'].append(estimator.score(X_train, y_train))
         scores['test'].append(estimator.score(X_test, y_test))
     
-    with open('gnb_scores.pickle','wb') as f:
+    with open('/media/james/ext4data/current/projects/ramasubbu/gnb_scores.pickle','wb') as f:
         pickle.dump(scores, f, pickle.HIGHEST_PROTOCOL) 
 
-    return 
+    return
 
 '''  
 def KNeighbors(X_train, X_test, y_train, y_test):

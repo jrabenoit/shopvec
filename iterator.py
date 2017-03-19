@@ -17,10 +17,9 @@ def TryMLTools():
     for i in range(len(sets)):
         seti= str(sets[i][0][0]+ ', '+ sets[i][1][0]+ ', '+ sets[i][2][0])
         print('Set: {}'.format(seti))
-        inner_cv= sets[i][0][1]()
-        inner_cv= sets[i][1][1]()
-        inner_cv= sets[i][2][1]()
-        inner_cv= results.InnerAverages(inner_cv, seti)
+        setscores= sets[i][0][1]()
+        setscores= sets[i][1][1]()
+        setscores= sets[i][2][1]()
 
     return   
 
