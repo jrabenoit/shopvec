@@ -13,7 +13,7 @@ def TryMLTools():
     estimators_set= inspect.getmembers(estimators, inspect.isfunction)
     
     sets= list(itertools.product(features_set, transform_set, estimators_set))
-    
+    print(sets)
     for i in range(len(sets)):
         seti= str(sets[i][0][0]+ ', '+ sets[i][1][0]+ ', '+ sets[i][2][0])
         print('Set: {}'.format(seti))

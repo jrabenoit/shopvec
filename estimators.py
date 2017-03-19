@@ -9,7 +9,7 @@ from sklearn import svm, naive_bayes, neighbors, ensemble, linear_model
 # .predict gives the per-subject predictions
 
 def GauNaiBay():
-    with open('data_dict.pickle','rb') as f:
+    with open('/media/james/ext4data/current/projects/ramasubbu/data_dict.pickle','rb') as f:
         data_dict=pickle.load(f)
     with open('inner_cv.pickle','rb') as f:
         inner_cv=pickle.load(f) 
