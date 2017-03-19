@@ -12,10 +12,11 @@ def GauNaiBay():
     with open('/media/james/ext4data/current/projects/ramasubbu/data_dict.pickle','rb') as f:
         data_dict=pickle.load(f)
     with open('/media/james/ext4data/current/projects/ramasubbu/inner_cv.pickle','rb') as f:
-        inner_cv=pickle.load(f) 
+        inner_cv=pickle.load(f)       
     
     scores= {'train': [], 'test': []}
     
+
     for i in range(25):
         X_train= np.array([data_dict['data'][j] for j in inner_cv['X_train'][i]])
         X_test= np.array([data_dict['data'][j] for j in inner_cv['X_test'][i]])
@@ -23,15 +24,23 @@ def GauNaiBay():
         y_test= inner_cv['y_test'][i]
         
         estimator = naive_bayes.GaussianNB()
-        print(len(X_train), len(X_test), len(y_train), len(y_test))
+        #print(len(X_train), len(X_test), len(y_train), len(y_test))
+        
         estimator.fit(X_train, y_train)
-        print(estimator.predict(X_test))
+        
+        print('Index: {}'.format([j for j in inner_cv['X_test'][i]]))
+        print('Label: {}'.format(y_test))
+        print('Prediction: {}'.format(estimator.predict(X_test)))
+        
+        
+        
+        
         scores['train'].append(estimator.score(X_train, y_train))
         scores['test'].append(estimator.score(X_test, y_test))
     
     with open('/media/james/ext4data/current/projects/ramasubbu/gnb_scores.pickle','wb') as f:
-        pickle.dump(scores, f, pickle.HIGHEST_PROTOCOL) 
-
+        pickle.dump(scores, f, pickle.HIGHEST_PROTOCOL)
+        
     return
 
 '''  
