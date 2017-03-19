@@ -15,7 +15,6 @@ from sklearn import preprocessing
 def SubjectInfo(): 
     '''Creates dict for scan data, incl file list & subject ID'''
 
-
     #FILES
     projectdir=input('Project directory (without quotes):')
     subdirs= glob.glob(projectdir + '/*')
@@ -42,7 +41,8 @@ def SubjectInfo():
     #mild-moderate hamd 14-19, severe 20-23, very severe 24+
     data_dict['symptom severity']= [0,0,0,0,0,0,0,0,0,0,
                                     0,0,0,0,0,0,0,0,
-                                    1,1,1,1,2,2,3,2,2,1,
+                                    #1,
+                                    1,1,1,2,2,3,2,2,1,
                                     2,1,3,2,3,3,2,3,2,2,
                                     2,3,3,3,1,3,2,1,2,1,
                                     2,3,2,1,2]
@@ -51,7 +51,8 @@ def SubjectInfo():
     #all remitters (3's) are responders (2's), but not vice versa
     data_dict['treatment response']= [0,0,0,0,0,0,0,0,0,0,
                                       0,0,0,0,0,0,0,0,
-                                      3,1,3,1,1,1,3,2,1,3,
+                                      #3,
+                                      1,3,1,1,1,3,2,1,3,
                                       3,2,3,1,3,1,1,2,2,1,
                                       1,2,2,3,2,2,3,3,1,2,
                                       2,2,3,2,2]
@@ -59,7 +60,8 @@ def SubjectInfo():
     #GROUP TYPE
     data_dict['group type']= [0,0,0,0,0,0,0,0,0,0,
                               0,0,0,0,0,0,0,0,
-                              1,1,1,1,1,1,1,1,1,1,
+                              #1,
+                              1,1,1,1,1,1,1,1,1,
                               1,1,1,1,1,1,1,1,1,1,              
                               1,1,1,1,1,1,1,1,1,1,
                               1,1,1,1,1]
@@ -69,39 +71,33 @@ def SubjectInfo():
     nifti_masker= NiftiMasker(mask_img=mask)
     stdscaler = preprocessing.StandardScaler(copy=True, with_mean=True, with_std=True)
     
-    for directory in data_dict['directory']:
+    for directory, subject in zip(data_dict['directory'], data_dict['subject ID']):
         #Creates list of .nii files in directory
+        print('\nSubject ID: {}'.format(subject))
         imagefiles=[]
         for filename in glob.glob(directory + '/**/*.nii', recursive=True):
             imagefiles.append(filename)
             imagefiles.sort()
-        print(len(imagefiles))
+        print('# of scans: {}'.format(len(imagefiles)))
         #Turns each nii file into a vector
         concatimage= []
         for filename in imagefiles:
             image= nib.load(filename)
             img_data= image.get_data()
-            img_data= np.concatenate(img_data) #3D-->2D
-            img_data=np.concatenate(img_data) #2D--> vector
-            concatimage.append(img_data)
-        print(len(concatimage))
-        #Downsampling/feature extraction step    
-        downsample= []
-        for i in concatimage:
-            downsample.append(signal.resample(i,10))
-        print(len(downsample))
+            img_data= np.reshape(img_data, (1,-1))
+            img_data= np.concatenate(img_data)
+            concatimage.extend(img_data)
+        concatimage=np.array(concatimage[0::10])
+        print('vector length: {}'.format(len(concatimage)))
         #Feature vector concatenation, putting all scans together sequentially
-        features=[]
-        for i in downsample:
-            features.extend(i)
-        print(len(features))
-        data_dict['data'].append(features)
+        data_dict['data'].append(concatimage)
+        print('subjects in data_dict: {}'.format(len(data_dict['data'])))
             
     
     #note: haven't done sklearn z-normalization yet- do with final multimodal array
         
-    with open('data_dict.pickle', 'wb') as d:
+    with open('/media/james/ext4data/current/projects/ramasubbu/16_10_25_ramasubbu_data_preprocessed_scan_removed/data_dict.pickle', 'wb') as d:
         pickle.dump(data_dict, d, pickle.HIGHEST_PROTOCOL) 
         
-    with open('data_dict.pickle', 'rb') as f:
-        data_dict= pickle.load(f)
+#    with open('/media/james/ext4data/current/projects/ramasubbu/16_10_25_ramasubbu_data_preprocessed_scan_removed/data_dict.pickle', 'rb') as f:
+#        data_dict= pickle.load(f)
