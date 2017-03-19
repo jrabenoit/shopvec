@@ -24,7 +24,6 @@ def SubjectInfo():
                 'subject ID': [], 
                 'symptom severity': [],
                 'treatment response': [],
-                'group type':[],
                 'data': []}
     
     #SUBJECT ID
@@ -36,32 +35,23 @@ def SubjectInfo():
     #0=control, 1=mild-moderate, 2=severe, 3=very severe
     #control hamd <=7
     #mild-moderate hamd 14-19, severe 20-23, very severe 24+
-    data_dict['symptom severity']= [0,0,0,0,0,0,0,0,0,0,
+    data_dict['symptom severity']= np.array([0,0,0,0,0,0,0,0,0,0,
                                     0,0,0,0,0,0,0,0,
                                     #1,
                                     1,1,1,2,2,3,2,2,1,
                                     2,1,3,2,3,3,2,3,2,2,
                                     2,3,3,3,1,3,2,1,2,1,
-                                    2,3,2,1,2]
+                                    2,3,2,1,2])
     #TREATMENT RESPONSE
     #control=0, non-response=1, response=2, remit=3
     #all remitters (3's) are responders (2's), but not vice versa
-    data_dict['treatment response']= [0,0,0,0,0,0,0,0,0,0,
+    data_dict['treatment response']= np.array([0,0,0,0,0,0,0,0,0,0,
                                       0,0,0,0,0,0,0,0,
                                       #3,
                                       1,3,1,1,1,3,2,1,3,
                                       3,2,3,1,3,1,1,2,2,1,
                                       1,2,2,3,2,2,3,3,1,2,
-                                      2,2,3,2,2]
-    
-    #GROUP TYPE
-    data_dict['group type']= [0,0,0,0,0,0,0,0,0,0,
-                              0,0,0,0,0,0,0,0,
-                              #1,
-                              1,1,1,1,1,1,1,1,1,
-                              1,1,1,1,1,1,1,1,1,1,              
-                              1,1,1,1,1,1,1,1,1,1,
-                              1,1,1,1,1]
+                                      2,2,3,2,2])
                                       
     #DATA
     mask = '/media/james/ext4data/current/projects/depression/07_Machine_Learning/02_FA_Skeletonized/mean_FA_skeleton_mask.nii.gz'
@@ -96,5 +86,5 @@ def SubjectInfo():
     with open('/media/james/ext4data/current/projects/ramasubbu/data_dict.pickle', 'wb') as d:
         pickle.dump(data_dict, d, pickle.HIGHEST_PROTOCOL) 
         
-#    with open('/media/james/ext4data/current/projects/ramasubbu/16_10_25_ramasubbu_data_preprocessed_scan_removed/data_dict.pickle', 'rb') as f:
+#    with open('/media/james/ext4data/current/projects/ramasubbu/data_dict.pickle', 'rb') as f:
 #        data_dict= pickle.load(f)
