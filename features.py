@@ -9,19 +9,26 @@ def AllFeats():
     return
 
 '''   
-def SelKBest_base(X_train, X_test, y_train, y_test, k=10):
-    fX_train = copy.copy(X_train)
-    fX_test = copy.copy(X_test)
-    fy_train = copy.copy(y_train)
-    fy_test = copy.copy(y_test)
+def SelKBest(X_train, X_test, y_train, y_test, k=20):
+        with open('/media/james/ext4data/current/projects/ramasubbu/data_dict.pickle','rb') as f:
+        data_dict=pickle.load(f)
+    with open('/media/james/ext4data/current/projects/ramasubbu/inner_cv.pickle','rb') as f:
+        inner_cv=pickle.load(f)  
+
     skb = SelectKBest(f_classif, k=k)
-    for i in range(0,len(X_train)):
-        fX_train[i] = skb.fit_transform(fX_train[i], fy_train[i])
-        fX_test[i] = skb.transform(fX_test[i])  
-    return fX_train, fX_test, fy_train, fy_test
+    for i in range(25):
+        X_train= np.array([data_dict['data'][j] for j in inner_cv['X_train'][i]])
+        X_test= np.array([data_dict['data'][j] for j in inner_cv['X_test'][i]])
+        y_train= inner_cv['y_train'][i]
+        y_test= inner_cv['y_test'][i]
     
-    skb = SelectKBest(f_classif, k=k)
-    skb.fit(fX_train, fy_train)
-    fX_train = skb.transform(fX_train)
-    fX_test = skb.transform(fX_test)
+        skb = SelectKBest(f_classif, k=k)
+        skb.fit(fX_train, fy_train)
+        fX_train = skb.transform(fX_train)
+        fX_test = skb.transform(fX_test)
+
+    with open('/media/james/ext4data/current/projects/ramasubbu/data_dict.pickle','wb') as f:
+        pickle.dump(data_dict, f, pickle.HIGHEST_PROTOCOL) 
+        
+    return
 '''
