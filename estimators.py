@@ -9,51 +9,29 @@ from sklearn import svm, naive_bayes, neighbors, ensemble, linear_model
 # .predict gives the per-subject predictions
 
 def GauNaiBay():
-    with open('/media/james/ext4data/current/projects/ramasubbu/data_dict.pickle','rb') as f:
+    with open('/media/james/ext4data/current/projects/ramasubbu/data.pickle','rb') as f:
         data_dict=pickle.load(f)
     with open('/media/james/ext4data/current/projects/ramasubbu/inner_cv.pickle','rb') as f:
         inner_cv=pickle.load(f)       
     
-    scores= {'gnb train': [], 
-             'gnb test': []}
-    predictions= {'gnb index': [],  
-                  'gnb label':[], 
-                  'gnb prediction':[]}
-
     for i in range(25):
-        X_train= np.array([data_dict['data'][j] for j in inner_cv['X_train'][i]])
-        X_test= np.array([data_dict['data'][j] for j in inner_cv['X_test'][i]])
+        X_train= np.array([data[j]['vector'] for j in inner_cv['X_train'][i]])
+        X_test= np.array([data[j]['vector'] for j in inner_cv['X_test'][i]])
         y_train= inner_cv['y_train'][i]
         y_test= inner_cv['y_test'][i]
         
-        estimator = naive_bayes.GaussianNB()
-        #print(len(X_train), len(X_test), len(y_train), len(y_test))
+        print(X_train)
+        print(X_test)
+        print(y_train)
+        print(y_test)
         
-        estimator.fit(X_train, y_train)
+        gnb= naive_bayes.GaussianNB()        
+        gnb.fit(X_train, y_train)
         
-        index=[j for j in inner_cv['X_test'][i]]
-        labels= y_test
-        prediction=estimator.predict(X_test)
-        
-        predictions['gnb index'].extend(index)
-        print(index)
-        predictions['gnb label'].extend(labels)
-        print(labels)
-        predictions['gnb prediction'].extend(prediction)
-        print(prediction)
-        
-        train_scores= estimator.score(X_train, y_train)
-        test_scores= estimator.score(X_test, y_test)
-        
-        scores['gnb train'].append(train_scores)
+        train_scores= gnb.score(X_train, y_train)
         print(train_scores)
-        scores['gnb test'].append(test_scores)
+        test_scores= gnb.score(X_test, y_test)
         print(test_scores)
-        
-    with open('/media/james/ext4data/current/projects/ramasubbu/gnb_scores.pickle','wb') as f:
-        pickle.dump(scores, f, pickle.HIGHEST_PROTOCOL)
-    with open('/media/james/ext4data/current/projects/ramasubbu/gnb_predictions.pickle','wb') as f:
-        pickle.dump(predictions, f, pickle.HIGHEST_PROTOCOL)    
     
     return
 

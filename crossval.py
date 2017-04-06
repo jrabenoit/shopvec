@@ -9,96 +9,113 @@ from sklearn.model_selection import StratifiedKFold
 
 def CVSetup():   
     
-    with open('/media/james/ext4data/current/projects/ramasubbu/data_dict.pickle', 'rb') as f:
-        data_dict= pickle.load(f)
+    with open('/media/james/ext4data/current/projects/ramasubbu/data.pickle', 'rb') as f:
+        data= pickle.load(f)
     
-    print('\nSymptom severity:\n')
+    print('\nSymptom Severity:\n')
     print(' 0= control/mild\n 1= control/severe\n 2= control/very severe\n 3= mild/severe\n 4= mild/very severe\n 5= severe/very severe\n 6= control/all patients\n')
-    print('Treatment response:\n')
+    
+    print('Treatment Response:\n')
     print(' 7= control/non-responder\n 8= control/all responder\n 9= control/remitter only\n 10= non-responder/all responder\n 11= non-responder/remitter only\n 12= responder vs remitter\n 13= control/all patients')
+    
     choice= int(input('\nChoice: '))
     
-    if choice== 0: 
-        group0= np.where(data_dict['symptom severity']==0)[0] 
-        group1= np.where(data_dict['symptom severity']==1)[0]
-        labels= np.array([[0]*len(group0)+[1]*len(group1)])[0]
-
-    elif choice== 1: 
-        group0= np.where(data_dict['symptom severity']==0)[0] 
-        group1= np.where(data_dict['symptom severity']==2)[0]
-        labels= np.array([[0]*len(group0)+[1]*len(group1)])[0]
-        
+    group0=[]
+    group1=[]
+    if choice== 0:
+        for i in data:
+            if data[i]['sx severity']==0: group0.append(i)
+            if data[i]['sx severity']==1: group1.append(i)
+        labels= np.array([0]*len(group0)+[1]*len(group1))
+    elif choice== 1:
+        for i in data:
+            if data[i]['sx severity']==0: group0.append(i)
+            if data[i]['sx severity']==2: group1.append(i)
+        labels= np.array([0]*len(group0)+[1]*len(group1))
     elif choice== 2:
-        group0= np.where(data_dict['symptom severity']==0)[0] 
-        group1= np.where(data_dict['symptom severity']==3)[0]
-        labels= np.array([[0]*len(group0)+[1]*len(group1)])[0]
-    
-    elif choice== 3: 
-        group0= np.where(data_dict['symptom severity']==1)[0] 
-        group1= np.where(data_dict['symptom severity']==2)[0]
-        labels= np.array([[0]*len(group0)+[1]*len(group1)])[0]
-    
-    elif choice== 4: 
-        group0= np.where(data_dict['symptom severity']==1)[0] 
-        group1= np.where(data_dict['symptom severity']==3)[0]
-        labels= np.array([[0]*len(group0)+[1]*len(group1)])[0]
-    
-    elif choice== 5: 
-        group0= np.where(data_dict['symptom severity']==2)[0] 
-        group1= np.where(data_dict['symptom severity']==3)[0]
-        labels= np.array([[0]*len(group0)+[1]*len(group1)])[0]
-    
-    elif choice== 6: 
-        group0= np.where(data_dict['symptom severity']==0)[0]
-        group1a= np.where(data_dict['symptom severity']==1)[0]
-        group1b= np.where(data_dict['symptom severity']==2)[0]
-        group1c= np.where(data_dict['symptom severity']==3)[0]
-        group1= np.sort(np.append(group1a,np.append(group1b,group1c)))
-        labels= np.array([[0]*len(group0)+[1]*len(group1)])[0]
-    
+        for i in data:
+            if data[i]['sx severity']==0: group0.append(i)
+            if data[i]['sx severity']==3: group1.append(i)
+        labels= np.array([0]*len(group0)+[1]*len(group1))    
+    elif choice== 3:
+        for i in data:
+            if data[i]['sx severity']==1: group0.append(i)
+            if data[i]['sx severity']==2: group1.append(i)
+        labels= np.array([0]*len(group0)+[1]*len(group1))        
+    elif choice== 4:
+        for i in data:
+            if data[i]['sx severity']==1: group0.append(i)
+            if data[i]['sx severity']==3: group1.append(i)
+        labels= np.array([0]*len(group0)+[1]*len(group1))        
+    elif choice== 5:
+        for i in data:
+            if data[i]['sx severity']==2: group0.append(i)
+            if data[i]['sx severity']==3: group1.append(i)
+        labels= np.array([0]*len(group0)+[1]*len(group1))
+    elif choice== 6:
+        group1a=[]
+        group1b=[]
+        group1c=[]
+        for i in data:
+            if data[i]['sx severity']==0: group0.append(i)
+            if data[i]['sx severity']==1: group1a.append(i)
+            if data[i]['sx severity']==2: group1b.append(i)
+            if data[i]['sx severity']==3: group1c.append(i)
+            group1= np.sort(np.append(group1a,np.append(group1b,group1c)))
+        labels= np.array([0]*len(group0)+[1]*len(group1))    
     elif choice== 7:
-        group0= np.where(data_dict['treatment response']==0)[0] 
-        group1= np.where(data_dict['treatment response']==1)[0]
-        labels= np.array([[0]*len(group0)+[1]*len(group1)])[0]
-    
+        for i in data:
+            if data[i]['tx response']==0: group0.append(i)
+            if data[i]['tx response']==1: group1.append(i)
+        labels= np.array([0]*len(group0)+[1]*len(group1))
     elif choice== 8:
-        group0= np.where(data_dict['treatment response']==0)[0] 
-        group1a= np.where(data_dict['treatment response']==2)[0]
-        group1b= np.where(data_dict['treatment response']==3)[0]
-        group1= np.sort(np.append(group1a,group1b))
-        labels= np.array([[0]*len(group0)+[1]*len(group1)])[0]
-    
-    elif choice== 9: 
-        group0= np.where(data_dict['treatment response']==0)[0] 
-        group1= np.where(data_dict['treatment response']==3)[0]
-        labels= np.array([[0]*len(group0)+[1]*len(group1)])[0]
-    
-    elif choice== 10: 
-        group0= np.where(data_dict['treatment response']==1)[0] 
-        group1a= np.where(data_dict['treatment response']==2)[0]
-        group1b= np.where(data_dict['treatment response']==3)[0]
-        group1= np.sort(np.append(group1a,group1b))
-        labels= np.array([[0]*len(group0)+[1]*len(group1)])[0]
-    
+        group1a=[]
+        group1b=[]
+        for i in data:
+            if data[i]['tx response']==0: group0.append(i)
+            if data[i]['tx response']==2: group1a.append(i)
+            if data[i]['tx response']==3: group1a.append(i)
+            group1= np.sort(np.append(group1a,group1b))
+        labels= np.array([0]*len(group0)+[1]*len(group1))  
+    elif choice== 9:
+        for i in data:
+            if data[i]['tx response']==0: group0.append(i)
+            if data[i]['tx response']==3: group1.append(i)
+        labels= np.array([0]*len(group0)+[1]*len(group1))
+    elif choice== 10:
+        group1a=[]
+        group1b=[]
+        for i in data:
+            if data[i]['tx response']==1: group0.append(i)
+            if data[i]['tx response']==2: group1a.append(i)
+            if data[i]['tx response']==3: group1a.append(i)
+            group1= np.sort(np.append(group1a,group1b))
+        labels= np.array([0]*len(group0)+[1]*len(group1))      
     elif choice== 11:
-        group0= np.where(data_dict['treatment response']==1)[0] 
-        group1= np.where(data_dict['treatment response']==3)[0]
-        labels= np.array([[0]*len(group0)+[1]*len(group1)])[0]
-    
+        for i in data:
+            if data[i]['tx response']==1: group0.append(i)
+            if data[i]['tx response']==3: group1.append(i)
+        labels= np.array([0]*len(group0)+[1]*len(group1))
     elif choice== 12:
-        group0= np.where(data_dict['treatment response']==2)[0] 
-        group1= np.where(data_dict['treatment response']==3)[0]
-        labels= np.array([[0]*len(group0)+[1]*len(group1)])[0]
-    
+        for i in data:
+            if data[i]['tx response']==2: group0.append(i)
+            if data[i]['tx response']==3: group1.append(i)
+        labels= np.array([0]*len(group0)+[1]*len(group1))    
     elif choice== 13:
-        group0= np.where(data_dict['treatment response']==0)[0]
-        group1a= np.where(data_dict['treatment response']==1)[0]
-        group1b= np.where(data_dict['treatment response']==2)[0]
-        group1c= np.where(data_dict['treatment response']==3)[0]
-        group1= np.sort(np.append(group1a,np.append(group1b,group1c)))
-        labels= np.array([[0]*len(group0)+[1]*len(group1)])[0]
-    
+        group1a=[]
+        group1b=[]
+        group1c=[]
+        for i in data:
+            if data[i]['tx response']==0: group0.append(i)
+            if data[i]['tx response']==1: group1a.append(i)
+            if data[i]['tx response']==2: group1a.append(i)
+            if data[i]['tx response']==3: group1a.append(i)
+            group1= np.sort(np.append(group1a,np.append(group1b,group1c)))
+        labels= np.array([0]*len(group0)+[1]*len(group1))  
     else: print('invalid selection.')
+    
+    group0.sort()
+    group1.sort()
     
     outer_cv={'X_train': [], 'X_test': [],
               'y_train': [], 'y_test': []}
@@ -110,9 +127,9 @@ def CVSetup():
 
     skf = StratifiedKFold(n_splits=5)
     
-    print('\nGroup size: {}'.format(len(X)))
+    print('\nGroup size: {}, group0: {}, group1: {}'.format(len(X), len(group0), len(group1)))
     print('Group indices: {}'.format(X))
-    print('\nLabel size: {}'.format(len(y)))
+    print('\nLabel size: {}, group0: {}, group1: {}'.format(len(y), (y==0).sum(), (y==1).sum()))
     print('Labels: {}\n'.format(y))
         
     for train_index, test_index in skf.split(X,y):
@@ -148,7 +165,6 @@ def InnerCv():
     for X_, y_ in zip(X, y): 
         skf = StratifiedKFold(n_splits=5)
         for train_index, test_index in skf.split(X_,y_):      
-            print("TRAIN:", train_index, "\nTEST:", test_index)
             X_train, X_test= X_[train_index], X_[test_index]
             y_train, y_test= y_[train_index], y_[test_index]
 
