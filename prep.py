@@ -68,11 +68,14 @@ def SubjectInfo():
             vector_of_scans.extend(scan)
         vector_of_scans=np.array(vector_of_scans[0::])
         print('Vector length: {}'.format(len(vector_of_scans)))
-        data[subject]['vector']=vector_of_scans
+        #data[subject]['vector']=vector_of_scans
+        with open('/media/james/ext4data/current/projects/ramasubbu/vectors/'+subject+'.pickle', 'wb') as d:
+            pickle.dump(vector_of_scans, d, pickle.HIGHEST_PROTOCOL) 
     
-    with open('/media/james/ext4data/current/projects/ramasubbu/data.pickle', 'wb') as d:
-        pickle.dump(data, d, pickle.HIGHEST_PROTOCOL) 
+    
+    #with open('/media/james/ext4data/current/projects/ramasubbu/data.pickle', 'wb') as d:
+    #    pickle.dump(data, d, pickle.HIGHEST_PROTOCOL) 
 
 #note: haven't done sklearn z-normalization yet- do with final multimodal array
-#    with open('/media/james/ext4data/current/projects/ramasubbu/data_dict.pickle', 'rb') as f:
-#        data_dict= pickle.load(f)   
+#    with open('/media/james/ext4data/current/projects/ramasubbu/data.pickle', 'rb') as f:
+#        data= pickle.load(f)   

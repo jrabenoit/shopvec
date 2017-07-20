@@ -10,7 +10,7 @@ from sklearn import svm, naive_bayes, neighbors, ensemble, linear_model
 
 def GauNaiBay():
     with open('/media/james/ext4data/current/projects/ramasubbu/data.pickle','rb') as f:
-        data_dict=pickle.load(f)
+        data=pickle.load(f)
     with open('/media/james/ext4data/current/projects/ramasubbu/inner_cv.pickle','rb') as f:
         inner_cv=pickle.load(f)       
     
@@ -27,6 +27,11 @@ def GauNaiBay():
         
         gnb= naive_bayes.GaussianNB()        
         gnb.fit(X_train, y_train)
+        
+        #make a dict
+        #outer dict: subject name
+        #list of inner dicts: result for one thing e.g. 
+        #subject(outer loop 3(inner loop 4(prediction, label, etc)))))
         
         train_scores= gnb.score(X_train, y_train)
         print(train_scores)

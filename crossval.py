@@ -159,7 +159,8 @@ def InnerCv():
     y= outer_cv['y_train']
     
     X_train, X_test, y_train, y_test = [], [], [], []
-
+    
+    #change X to subjects, y to labels
     #read loop as, "for each pair of X and y lists in (X,y)"
     
     for X_, y_ in zip(X, y): 
