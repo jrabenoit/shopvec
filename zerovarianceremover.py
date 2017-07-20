@@ -2,7 +2,7 @@
 
 import numpy as np
 import sklearn.feature_selection
-import pickle
+import pickle, os, glob
 
 def ScrubArrays():
 
@@ -12,37 +12,57 @@ def ScrubArrays():
 #2. In each position, if empty matrix & subject data are both nonzero, keep array=1
 #3. Else make array position's value =0
 #4. Extract the indices from array, cut subject arrays to match
-    
-    #SUBJECT ID LIST
-    ones_array=np.ones(110968486)
 
-    for subject in data:
-        print('\nSubject ID: {}'.format(subject))
+#beginning code
+'''    
+    #SUBJECT ID LIST
+    oa=np.ones(110968486)
+    for filename in os.listdir('/media/james/ext4data1/current/projects/ramasubbu/vectors'):
+        print('\nSubject ID: {}'.format(filename))
+        #sort scan directory
         scans=[]
-        for i in glob.glob(data[subject]['dir'] + '/**/*.nii', recursive=True):
+        for i in glob.glob(data[filename]['dir'] + '/**/*.nii', recursive=True):
             scans.append(i)
             scans.sort()
         print('# of scans: {}'.format(len(scans)))
-        vector_of_scans= []
+        vecs= []
+        #import a single subject's scans, create vector
         for i in scans:
             j= nib.load(i)
             scan= j.get_data()
             scan= np.reshape(scan, (1,-1))
             scan= np.concatenate(scan)
-            vector_of_scans.extend(scan)
-        vector_of_scans=np.array(vector_of_scans[0::])
-        print('Vector length: {}'.format(len(vector_of_scans)))
+            vecs.extend(scan)
+        vecs=np.array(vector_of_scans[0::])
+        print('Vector length: {}'.format(len(vecs)))
+        #compare master array to subject's vector
+        for i,j in zip(ones_array, vector_of_scans):
+            if ones_array[i]>0.0 or vector_of_scans[j]==0:
+                ones_array[i]=0
+        print('Remaining features: {}'.format(sum(ones_array)))
+                
         data[subject]['vector']=vector_of_scans
-    
-    
+'''
 
-with open('/media/james/ext4data/current/projects/ramasubbu/data.pickle', 'rb') as f: data= pickle.load(f)
+#code we're using atm to get indices to be kept
+for filename in os.listdir('/media/james/ext4data1/current/projects/ramasubbu/vectors'):
+    with open('/media/james/ext4data1/current/projects/ramasubbu/vectors/'+filename, 'rb') as f:
+        vecs=pickle.load(f)
+        for i,j in zip(oa, vecs):
+            if oa[i]==0 or vecs[j]==0:
+                oa[i]=0
+        
+
+
+
+'''
+with open('/media/james/ext4data1/current/projects/ramasubbu/data.pickle', 'rb') as f: data= pickle.load(f)
 
 X=np.array([data[i]['vector'] for i in data])
 
 data=[]
 
-with open('/media/james/ext4data/current/projects/ramasubbu/X.pickle', 'wb') as d: pickle.dump(X, d, pickle.HIGHEST_PROTOCOL) 
+with open('/media/james/ext4data1/current/projects/ramasubbu/X.pickle', 'wb') as d: pickle.dump(X, d, pickle.HIGHEST_PROTOCOL) 
 
 #-- stop here and exit everything --
 
@@ -53,4 +73,4 @@ vt= sklearn.feature_selection.VarianceThreshold()
 vt.fit(X)
 
 nonzero_indices= vt.get_support(indices=True)
-
+'''
