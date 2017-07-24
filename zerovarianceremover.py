@@ -16,7 +16,7 @@ def ScrubArrays():
 #beginning code
 '''    
     #SUBJECT ID LIST
-    oa=np.ones(110968486)
+    oa=np.ones(110968486, dtype=np.float32)
     for filename in os.listdir('/media/james/ext4data1/current/projects/ramasubbu/vectors'):
         print('\nSubject ID: {}'.format(filename))
         #sort scan directory
@@ -45,15 +45,21 @@ def ScrubArrays():
 '''
 
 #code we're using atm to get indices to be kept
-for filename in os.listdir('/media/james/ext4data1/current/projects/ramasubbu/vectors'):
-    with open('/media/james/ext4data1/current/projects/ramasubbu/vectors/'+filename, 'rb') as f:
+#test on 4 subjects
+oa=np.ones(110968486, dtype=np.float32)
+for filename in os.listdir('/media/james/ext4data1/current/projects/ramasubbu/vectortest'):
+    with open('/media/james/ext4data1/current/projects/ramasubbu/vectortest/'+filename, 'rb') as f:
         vecs=pickle.load(f)
         for i,j in zip(oa, vecs):
             if oa[i]==0 or vecs[j]==0:
                 oa[i]=0
-        
 
-
+#testing 1 subject
+    with open('/media/james/ext4data1/current/projects/ramasubbu/vectors/c001.pickle', 'rb') as f:
+        vecs=pickle.load(f)
+        for i,j in zip(oa, vecs):
+            if oa[i]==0 or vecs[j]==0:
+                oa[i]=0
 
 '''
 with open('/media/james/ext4data1/current/projects/ramasubbu/data.pickle', 'rb') as f: data= pickle.load(f)
