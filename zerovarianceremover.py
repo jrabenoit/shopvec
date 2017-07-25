@@ -50,17 +50,23 @@ oa=np.ones(110968486, dtype=np.float32)
 for filename in os.listdir('/media/james/ext4data1/current/projects/ramasubbu/vectortest'):
     with open('/media/james/ext4data1/current/projects/ramasubbu/vectortest/'+filename, 'rb') as f:
         vecs=pickle.load(f)
-        for i,j in zip(oa, vecs):
-            if oa[i]==0 or vecs[j]==0:
-                oa[i]=0
+        for i in range(0,110968486):
+            if (oa[i]!=0.0 and vecs[i]!=0.0):
+                oa[i]=1.0
+            else: oa[i]=0.0
 
 #testing 1 subject
-    with open('/media/james/ext4data1/current/projects/ramasubbu/vectors/c001.pickle', 'rb') as f:
+    with open('/media/james/ext4data1/current/projects/ramasubbu/vectors/c002.pickle', 'rb') as f:
         vecs=pickle.load(f)
-        for i,j in zip(oa, vecs):
-            if oa[i]==0 or vecs[j]==0:
-                oa[i]=0
+        for i in range(0,110968486):
+            if (oa[i]!=0.0 and vecs[i]!=0.0):
+                oa[i]=1.0
+            else: oa[i]=0.0
 
+for i in range(len(vecs)):
+     if oa[i]==1.0:
+         a=a+1
+         
 '''
 with open('/media/james/ext4data1/current/projects/ramasubbu/data.pickle', 'rb') as f: data= pickle.load(f)
 
