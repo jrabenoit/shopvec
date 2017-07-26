@@ -47,13 +47,17 @@ def ScrubArrays():
 #code we're using atm to get indices to be kept
 #test on 4 subjects
 oa=np.ones(110968486, dtype=np.float32)
-for filename in os.listdir('/media/james/ext4data1/current/projects/ramasubbu/vectortest'):
-    with open('/media/james/ext4data1/current/projects/ramasubbu/vectortest/'+filename, 'rb') as f:
+a=0
+for filename in os.listdir('/media/james/ext4data1/current/projects/ramasubbu/vectors'):
+    print('{}, {}/52'.format(filename, a))
+    a=a+1
+    with open('/media/james/ext4data1/current/projects/ramasubbu/vectors/'+filename, 'rb') as f:
         vecs=pickle.load(f)
         for i in range(0,110968486):
-            if (oa[i]!=0.0 and vecs[i]!=0.0):
-                oa[i]=1.0
+            if (oa[i]!=0.0 and vecs[i]!=0.0): oa[i]=1.0
             else: oa[i]=0.0
+
+with open('/media/james/ext4data1/current/projects/ramasubbu/oa.pickle', 'wb') as d: pickle.dump(oa, d, pickle.HIGHEST_PROTOCOL) 
 
 #testing 1 subject
     with open('/media/james/ext4data1/current/projects/ramasubbu/vectors/c002.pickle', 'rb') as f:
@@ -74,7 +78,7 @@ X=np.array([data[i]['vector'] for i in data])
 
 data=[]
 
-with open('/media/james/ext4data1/current/projects/ramasubbu/X.pickle', 'wb') as d: pickle.dump(X, d, pickle.HIGHEST_PROTOCOL) 
+with open('/media/james/ext4data1/current/projects/ramasubbu/oa.pickle', 'wb') as d: pickle.dump(oa, d, pickle.HIGHEST_PROTOCOL) 
 
 #-- stop here and exit everything --
 
