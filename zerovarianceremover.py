@@ -47,15 +47,14 @@ def ScrubArrays():
 #code we're using atm to get indices to be kept
 #test on 4 subjects
 oa=np.ones(110968486, dtype=np.float32)
-a=0
+a=1
 for filename in os.listdir('/media/james/ext4data1/current/projects/ramasubbu/vectors'):
     print('{}, {}/52'.format(filename, a))
     a=a+1
     with open('/media/james/ext4data1/current/projects/ramasubbu/vectors/'+filename, 'rb') as f:
         vecs=pickle.load(f)
         for i in range(0,110968486):
-            if (oa[i]!=0.0 and vecs[i]!=0.0): oa[i]=1.0
-            else: oa[i]=0.0
+            if (oa[i]==0.0 or vecs[i]==0.0): oa[i]=0.0
 
 with open('/media/james/ext4data1/current/projects/ramasubbu/oa.pickle', 'wb') as d: pickle.dump(oa, d, pickle.HIGHEST_PROTOCOL) 
 
@@ -63,14 +62,25 @@ with open('/media/james/ext4data1/current/projects/ramasubbu/oa.pickle', 'wb') a
     with open('/media/james/ext4data1/current/projects/ramasubbu/vectors/c002.pickle', 'rb') as f:
         vecs=pickle.load(f)
         for i in range(0,110968486):
-            if (oa[i]!=0.0 and vecs[i]!=0.0):
-                oa[i]=1.0
-            else: oa[i]=0.0
+            if (oa[i]==0.0 or vecs[i]==0.0):
+                oa[i]=0.0
 
 for i in range(len(vecs)):
      if oa[i]==1.0:
          a=a+1
-         
+
+#Going through all subjects to remove zero values.
+with open('/media/james/ext4data1/current/projects/ramasubbu/oa.pickle', 'rb') as f:
+        oa=pickle.load(f)
+        
+for filename in os.listdir('/media/james/ext4data1/current/projects/ramasubbu/vectors'):
+    print('{}, {}/52'.format(filename, a))
+    a=a+1
+    with open('/media/james/ext4data1/current/projects/ramasubbu/vectors/'+filename, 'rb') as f: vecs=pickle.load(f)
+        index= np.argwhere(oa==0)
+        final= np.delete(vecs, oa)
+    with open('/media/james/ext4data1/current/projects/ramasubbu/nonzerovectors/'+filename+'.pickle', 'wb') as d: pickle.dump(final, d, pickle.HIGHEST_PROTOCOL)
+     
 '''
 with open('/media/james/ext4data1/current/projects/ramasubbu/data.pickle', 'rb') as f: data= pickle.load(f)
 
