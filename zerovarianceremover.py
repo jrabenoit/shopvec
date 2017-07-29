@@ -44,8 +44,7 @@ def ScrubArrays():
         data[subject]['vector']=vector_of_scans
 '''
 
-#code we're using atm to get indices to be kept
-#test on 4 subjects
+#1. Code we're using atm to get indices to be kept
 oa=np.ones(110968486, dtype=np.float32)
 a=1
 for filename in os.listdir('/media/james/ext4data1/current/projects/ramasubbu/vectors'):
@@ -57,8 +56,10 @@ for filename in os.listdir('/media/james/ext4data1/current/projects/ramasubbu/ve
             if (oa[i]==0.0 or vecs[i]==0.0): oa[i]=0.0
 
 with open('/media/james/ext4data1/current/projects/ramasubbu/oa.pickle', 'wb') as d: pickle.dump(oa, d, pickle.HIGHEST_PROTOCOL) 
+#result: 91654728 voxels remain.
 
-#testing 1 subject
+
+#1a. Testing single subject
     with open('/media/james/ext4data1/current/projects/ramasubbu/vectors/c002.pickle', 'rb') as f:
         vecs=pickle.load(f)
         for i in range(0,110968486):
@@ -69,17 +70,19 @@ for i in range(len(vecs)):
      if oa[i]==1.0:
          a=a+1
 
-#Going through all subjects to remove zero values.
+#2. Going through all subjects to remove zero values.
 with open('/media/james/ext4data1/current/projects/ramasubbu/oa.pickle', 'rb') as f:
         oa=pickle.load(f)
         
 for filename in os.listdir('/media/james/ext4data1/current/projects/ramasubbu/vectors'):
     print('{}, {}/52'.format(filename, a))
     a=a+1
-    with open('/media/james/ext4data1/current/projects/ramasubbu/vectors/'+filename, 'rb') as f: vecs=pickle.load(f)
-        index= np.argwhere(oa==0)
-        final= np.delete(vecs, oa)
-    with open('/media/james/ext4data1/current/projects/ramasubbu/nonzerovectors/'+filename+'.pickle', 'wb') as d: pickle.dump(final, d, pickle.HIGHEST_PROTOCOL)
+    with open('/media/james/ext4data1/current/projects/ramasubbu/vectors/'+filename, 'rb') as f: 
+        vecs=pickle.load(f)
+    for i in range(0,110968486):
+        if oa[i]==0.0:
+            vecs=np.delete(vecs, i)
+    with open('/media/james/ext4data1/current/projects/ramasubbu/nonzerovectors/'+filename, 'wb') as d: pickle.dump(vecs, d, pickle.HIGHEST_PROTOCOL)
      
 '''
 with open('/media/james/ext4data1/current/projects/ramasubbu/data.pickle', 'rb') as f: data= pickle.load(f)
