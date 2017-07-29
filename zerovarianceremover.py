@@ -73,6 +73,8 @@ for i in range(len(vecs)):
 #2. Going through all subjects to remove zero values.
 with open('/media/james/ext4data1/current/projects/ramasubbu/oa.pickle', 'rb') as f:
         oa=pickle.load(f)
+    indices=np.array([i for i,x in enumerate(oa) if x==0])
+#This gives us all the indices in the array that need deletion.
         
 for filename in os.listdir('/media/james/ext4data1/current/projects/ramasubbu/vectors'):
     print('{}, {}/52'.format(filename, a))
@@ -81,9 +83,10 @@ for filename in os.listdir('/media/james/ext4data1/current/projects/ramasubbu/ve
         vecs=pickle.load(f)
     for i in range(0,110968486):
         if oa[i]==0.0:
-            vecs=np.delete(vecs, i)
-    with open('/media/james/ext4data1/current/projects/ramasubbu/nonzerovectors/'+filename, 'wb') as d: pickle.dump(vecs, d, pickle.HIGHEST_PROTOCOL)
-     
+            final=np.delete(vecs, indices)
+    with open('/media/james/ext4data1/current/projects/ramasubbu/nonzerovectors/'+filename, 'wb') as d: pickle.dump(final, d, pickle.HIGHEST_PROTOCOL)
+#This masks all subjects one by one such that all zero values are deleted.
+
 '''
 with open('/media/james/ext4data1/current/projects/ramasubbu/data.pickle', 'rb') as f: data= pickle.load(f)
 
