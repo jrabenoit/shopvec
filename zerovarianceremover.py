@@ -60,7 +60,7 @@ with open('/media/james/ext4data1/current/projects/ramasubbu/oa.pickle', 'wb') a
 
 
 #1a. Testing single subject
-    with open('/media/james/ext4data1/current/projects/ramasubbu/vectors/c002.pickle', 'rb') as f:
+    with open('/media/james/ext4data1/current/projects/ramasubbu/vectors/c011.pickle', 'rb') as f:
         vecs=pickle.load(f)
         for i in range(0,110968486):
             if (oa[i]==0.0 or vecs[i]==0.0):
@@ -71,8 +71,10 @@ for i in range(len(vecs)):
          a=a+1
 
 #2. Going through all subjects to remove zero values.
+#Somethign isn't deleting the actual array points, so we are still ending up with a 110M long vector instead of a 91M long vector.
+
 with open('/media/james/ext4data1/current/projects/ramasubbu/oa.pickle', 'rb') as f:
-        oa=pickle.load(f)
+    oa=pickle.load(f)
     indices=np.array([i for i,x in enumerate(oa) if x==0])
 #This gives us all the indices in the array that need deletion.
         
@@ -81,11 +83,11 @@ for filename in os.listdir('/media/james/ext4data1/current/projects/ramasubbu/ve
     a=a+1
     with open('/media/james/ext4data1/current/projects/ramasubbu/vectors/'+filename, 'rb') as f: 
         vecs=pickle.load(f)
-    for i in range(0,110968486):
-        if oa[i]==0.0:
-            final=np.delete(vecs, indices)
-    with open('/media/james/ext4data1/current/projects/ramasubbu/nonzerovectors/'+filename, 'wb') as d: pickle.dump(final, d, pickle.HIGHEST_PROTOCOL)
+        final=np.delete(vecs, indices)
+        with open('/media/james/ext4data1/current/projects/ramasubbu/nonzerovectors/'+filename, 'wb') as d: 
+            pickle.dump(final, d, pickle.HIGHEST_PROTOCOL)
 #This masks all subjects one by one such that all zero values are deleted.
+
 
 '''
 with open('/media/james/ext4data1/current/projects/ramasubbu/data.pickle', 'rb') as f: data= pickle.load(f)

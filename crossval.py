@@ -142,8 +142,7 @@ def CVSetup():
         outer_cv['y_train'].append(y_train)
         outer_cv['y_test'].append(y_test)
 
-    with open('/media/james/ext4data/current/projects/ramasubbu/outer_cv.pickle', 'wb') as f:
-        pickle.dump(outer_cv, f, pickle.HIGHEST_PROTOCOL) 
+    with open('/media/james/ext4data/current/projects/ramasubbu/outer_cv.pickle', 'wb') as f: pickle.dump(outer_cv, f, pickle.HIGHEST_PROTOCOL) 
 
     return
     
