@@ -9,21 +9,22 @@ from sklearn import svm, naive_bayes, neighbors, ensemble, linear_model
 # .predict gives the per-subject predictions
 
 def GauNaiBay():
-    with open('/media/james/ext4data/current/projects/ramasubbu/data.pickle','rb') as f:
-        data=pickle.load(f)
-    with open('/media/james/ext4data/current/projects/ramasubbu/inner_cv.pickle','rb') as f:
-        inner_cv=pickle.load(f)       
     
-    for i in range(25):
-        X_train= np.array([data[j]['vector'] for j in inner_cv['X_train'][i]])
-        X_test= np.array([data[j]['vector'] for j in inner_cv['X_test'][i]])
+    with open('/media/james/ext4data1/current/projects/ramasubbu/inner_cv.pickle','rb') as f: inner_cv=pickle.load(f)       
+    
+    for i in range(1):
+        with open('/media/james/ext4data1/current/projects/ramasubbu/innercvfeatures/fold_'+str(i)+'_train.pickle','rb') as f:    
+            X_train=pickle.load(f)
+        with open('/media/james/ext4data1/current/projects/ramasubbu/innercvfeatures/fold_'+str(i)+'_test.pickle','rb') as f:
+            X_test=pickle.load(f)
+        
         y_train= inner_cv['y_train'][i]
         y_test= inner_cv['y_test'][i]
         
-        print(X_train)
-        print(X_test)
-        print(y_train)
-        print(y_test)
+        print('X_train\n{}\n'.format(X_train[0:1:1]))
+        print('X_test\n{}\n'.format(X_test[0:1:1]))
+        print('y_train\n{}\n'.format(y_train))
+        print('y_test\n{}\n'.format(y_test))
         
         gnb= naive_bayes.GaussianNB()        
         gnb.fit(X_train, y_train)
