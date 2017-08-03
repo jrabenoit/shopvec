@@ -17,6 +17,7 @@ def SelKBest():
     
     for i in range(25):
         X_train=[]
+        print('fold {}/25'.format(i))
         #X_train=np.empty((len(),91654728), float)        
         for j in inner_cv['X_train'][i]:
             print('{}, {}'.format(j, len(X_train)))
@@ -24,14 +25,16 @@ def SelKBest():
             X_train=X_train+[vecs]
             #X_train=np.append(X_train, [vecs], axis=0)
         
-        X_train= np.asarray(X_train)
-        print(X_train)
-        print(X_train[0])
-        print(len(X_train))    
-        y_train= inner_cv['y_train'][i]
+        X_train= np.array(X_train)
+        y_train= np.array(inner_cv['y_train'][i])
+        
+        print(y_train)
         print('\nPicking Features\n')
+        
         skb= SelectKBest(k=20)  
         skb.fit_transform(X_train, y_train)
+        
+        print('\nSaving Array\n')
             
         with open('/media/james/ext4data1/current/projects/ramasubbu/innercvfeatures/fold_'+i+'.pickle','wb') as f: pickle.dump(X_train, f, pickle.HIGHEST_PROTOCOL) 
 
