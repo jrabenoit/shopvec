@@ -9,7 +9,7 @@ from sklearn.model_selection import StratifiedKFold
 
 def CVSetup():   
     
-    with open('/media/james/ext4data/current/projects/ramasubbu/data.pickle', 'rb') as f:
+    with open('/media/james/ext4data1/current/projects/ramasubbu/data.pickle', 'rb') as f:
         data= pickle.load(f)
     
     print('\nSymptom Severity:\n')
@@ -18,8 +18,9 @@ def CVSetup():
     print('Treatment Response:\n')
     print(' 7= control/non-responder\n 8= control/all responder\n 9= control/remitter only\n 10= non-responder/all responder\n 11= non-responder/remitter only\n 12= responder vs remitter\n 13= control/all patients')
     
+    print('\nStudy contains {} Subjects'.format(len(data)))
     choice= int(input('\nChoice: '))
-    
+        
     group0=[]
     group1=[]
     if choice== 0:
@@ -142,14 +143,13 @@ def CVSetup():
         outer_cv['y_train'].append(y_train)
         outer_cv['y_test'].append(y_test)
 
-    with open('/media/james/ext4data/current/projects/ramasubbu/outer_cv.pickle', 'wb') as f: pickle.dump(outer_cv, f, pickle.HIGHEST_PROTOCOL) 
+    with open('/media/james/ext4data1/current/projects/ramasubbu/outer_cv.pickle', 'wb') as f: pickle.dump(outer_cv, f, pickle.HIGHEST_PROTOCOL) 
 
     return
     
 def InnerCv():
     '''Set up as a flat structure of 25 df'''
-    with open('/media/james/ext4data/current/projects/ramasubbu/outer_cv.pickle', 'rb') as f:
-        outer_cv= pickle.load(f)
+    with open('/media/james/ext4data1/current/projects/ramasubbu/outer_cv.pickle', 'rb') as f: outer_cv= pickle.load(f)
 
     inner_cv={'X_train': [], 'X_test': [],
               'y_train': [], 'y_test': []}
@@ -173,7 +173,7 @@ def InnerCv():
             inner_cv['y_train'].append(y_train)
             inner_cv['y_test'].append(y_test)
 
-    with open('/media/james/ext4data/current/projects/ramasubbu/inner_cv.pickle', 'wb') as f:
+    with open('/media/james/ext4data1/current/projects/ramasubbu/inner_cv.pickle', 'wb') as f:
         pickle.dump(inner_cv, f, pickle.HIGHEST_PROTOCOL) 
     
     return

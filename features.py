@@ -10,13 +10,33 @@ def AllFeats():
     return
 
 def SelKBest():
-    with open('/media/james/ext4data/current/projects/ramasubbu/data.pickle','rb') as f:
-        data=pickle.load(f)
-    with open('/media/james/ext4data/current/projects/ramasubbu/inner_cv.pickle','rb') as f:
-        inner_cv=pickle.load(f)       
+    with open('/media/james/ext4data1/current/projects/ramasubbu/data.pickle','rb') as f: data=pickle.load(f)
+    with open('/media/james/ext4data1/current/projects/ramasubbu/inner_cv.pickle','rb') as f: inner_cv=pickle.load(f)       
+
+#i is for the number of inner CV fold, j is for each subject in that fold.
     
-    features={}
     for i in range(25):
+        X_train=[]
+        #X_train=np.empty((len(),91654728), float)        
+        for j in inner_cv['X_train'][i]:
+            print('{}, {}'.format(j, len(X_train)))
+            with open('/media/james/ext4data1/current/projects/ramasubbu/nonzerovectors/'+j+'.pickle','rb') as f: vecs=pickle.load(f)
+            X_train=X_train+[vecs]
+            #X_train=np.append(X_train, [vecs], axis=0)
+        
+        X_train= np.asarray(X_train)
+        print(X_train)
+        print(X_train[0])
+        print(len(X_train))    
+        y_train= inner_cv['y_train'][i]
+        print('\nPicking Features\n')
+        skb= SelectKBest(k=20)  
+        skb.fit_transform(X_train, y_train)
+            
+        with open('/media/james/ext4data1/current/projects/ramasubbu/innercvfeatures/fold_'+i+'.pickle','wb') as f: pickle.dump(X_train, f, pickle.HIGHEST_PROTOCOL) 
+
+
+'''        
         X_train= np.array([data[j]['vector'] for j in inner_cv['X_train'][i]])
         X_test= np.array([data[j]['vector'] for j in inner_cv['X_test'][i]])
         y_train= inner_cv['y_train'][i]
@@ -37,6 +57,10 @@ def SelKBest():
         pickle.dump(features, f, pickle.HIGHEST_PROTOCOL) 
     
     return
+'''
+
+
+
 '''   
 def SelKBest(X_train, X_test, y_train, y_test, k=20):
         with open('/media/james/ext4data/current/projects/ramasubbu/data_dict.pickle','rb') as f:
