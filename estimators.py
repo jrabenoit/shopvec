@@ -8,44 +8,84 @@ from sklearn import svm, naive_bayes, neighbors, ensemble, linear_model
 # .score tests the fitted model on data.
 # .predict gives the per-subject predictions
 
+#To open score dict for gnb: with open('/media/james/ext4data1/current/projects/ramasubbu/gnbscores.pickle','rb') as f: scores=pickle.load(f)
+
 def GauNaiBay():
-    
     with open('/media/james/ext4data1/current/projects/ramasubbu/inner_cv.pickle','rb') as f: inner_cv=pickle.load(f)       
     
-    scores={'fold': [], 'gnb inner train':[], 'gnb inner test':[]}
+    scores={'fold': [], 'inner train':[], 'inner test':[]}
     
     for i in range(25):
-        with open('/media/james/ext4data1/current/projects/ramasubbu/innercvfeatures/fold_'+str(i)+'_train.pickle','rb') as f:    
+        with open('/media/james/ext4data1/current/projects/ramasubbu/fasticafeatures/fold_'+str(i)+'_train.pickle','rb') as f:    
             X_train=pickle.load(f)
-        with open('/media/james/ext4data1/current/projects/ramasubbu/innercvfeatures/fold_'+str(i)+'_test.pickle','rb') as f:
+        with open('/media/james/ext4data1/current/projects/ramasubbu/fasticafeatures/fold_'+str(i)+'_test.pickle','rb') as f:
             X_test=pickle.load(f)
         
         y_train= inner_cv['y_train'][i]
         y_test= inner_cv['y_test'][i]
         
-        gnb= naive_bayes.GaussianNB()
-        gnb.fit(X_train, y_train)
+        est= naive_bayes.GaussianNB()
+        est.fit(X_train, y_train)
                 
         print('\nFold {}/25\n'.format((i+1)))
         
-        predicted_train= gnb.predict(X_train)
-        train_score= gnb.score(X_train, y_train)
+        predicted_train= est.predict(X_train)
+        train_score= est.score(X_train, y_train)
         print('X_train predictions: {}'.format(predicted_train))
         print('y_train actual vals: {}'.format(y_train))        
         print('Training set score: {}%\n'.format((train_score*100)))
         
-        predicted_test= gnb.predict(X_test)
-        test_score= gnb.score(X_test, y_test)
+        predicted_test= est.predict(X_test)
+        test_score= est.score(X_test, y_test)
         print('X_test predictions: {}'.format(predicted_test))
         print('y_test actual vals: {}'.format(y_test))
         print('Test set score: {}%\n'.format((test_score*100)))
 
         scores['fold'].append(i)
-        scores['gnb inner train'].append(train_score)
-        scores['gnb inner test'].append(test_score)
-        
+        scores['inner train'].append(train_score)
+        scores['inner test'].append(test_score)
     
     with open('/media/james/ext4data1/current/projects/ramasubbu/gnbscores.pickle', 'wb') as d: pickle.dump(scores, d, pickle.HIGHEST_PROTOCOL) 
+
+    return
+
+def RandomForest():
+    with open('/media/james/ext4data1/current/projects/ramasubbu/inner_cv.pickle','rb') as f: inner_cv=pickle.load(f)       
+    
+    scores={'fold': [], 'inner train':[], 'inner test':[]}
+    
+    for i in range(25):
+        with open('/media/james/ext4data1/current/projects/ramasubbu/fasticafeatures/fold_'+str(i)+'_train.pickle','rb') as f:    
+            X_train=pickle.load(f)
+        with open('/media/james/ext4data1/current/projects/ramasubbu/fasticafeatures/fold_'+str(i)+'_test.pickle','rb') as f:
+            X_test=pickle.load(f)
+        
+        y_train= inner_cv['y_train'][i]
+        y_test= inner_cv['y_test'][i]
+        
+        est= ensemble.RandomForestClassifier()
+        est.fit(X_train, y_train)
+                
+        print('\nFold {}/25\n'.format((i+1)))
+        
+        predicted_train= est.predict(X_train)
+        train_score= est.score(X_train, y_train)
+        print('X_train predictions: {}'.format(predicted_train))
+        print('y_train actual vals: {}'.format(y_train))        
+        print('Training set score: {}%\n'.format((train_score*100)))
+        
+        predicted_test= est.predict(X_test)
+        test_score= est.score(X_test, y_test)
+        print('X_test predictions: {}'.format(predicted_test))
+        print('y_test actual vals: {}'.format(y_test))
+        print('Test set score: {}%\n'.format((test_score*100)))
+
+        scores['fold'].append(i)
+        scores['inner train'].append(train_score)
+        scores['inner test'].append(test_score)
+        
+    
+    with open('/media/james/ext4data1/current/projects/ramasubbu/rfscores.pickle', 'wb') as d: pickle.dump(scores, d, pickle.HIGHEST_PROTOCOL) 
 
     return
 
