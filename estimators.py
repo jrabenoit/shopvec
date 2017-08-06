@@ -12,7 +12,9 @@ def GauNaiBay():
     
     with open('/media/james/ext4data1/current/projects/ramasubbu/inner_cv.pickle','rb') as f: inner_cv=pickle.load(f)       
     
-    for i in range(1):
+    scores={'fold': [], 'gnb inner train':[], 'gnb inner test':[]}
+    
+    for i in range(25):
         with open('/media/james/ext4data1/current/projects/ramasubbu/innercvfeatures/fold_'+str(i)+'_train.pickle','rb') as f:    
             X_train=pickle.load(f)
         with open('/media/james/ext4data1/current/projects/ramasubbu/innercvfeatures/fold_'+str(i)+'_test.pickle','rb') as f:
@@ -21,24 +23,30 @@ def GauNaiBay():
         y_train= inner_cv['y_train'][i]
         y_test= inner_cv['y_test'][i]
         
-        print('X_train\n{}\n'.format(X_train[0:1:1]))
-        print('X_test\n{}\n'.format(X_test[0:1:1]))
-        print('y_train\n{}\n'.format(y_train))
-        print('y_test\n{}\n'.format(y_test))
-        
-        gnb= naive_bayes.GaussianNB()        
+        gnb= naive_bayes.GaussianNB()
         gnb.fit(X_train, y_train)
+                
+        print('\nFold {}/25\n'.format((i+1)))
         
-        #make a dict
-        #outer dict: subject name
-        #list of inner dicts: result for one thing e.g. 
-        #subject(outer loop 3(inner loop 4(prediction, label, etc)))))
+        predicted_train= gnb.predict(X_train)
+        train_score= gnb.score(X_train, y_train)
+        print('X_train predictions: {}'.format(predicted_train))
+        print('y_train actual vals: {}'.format(y_train))        
+        print('Training set score: {}%\n'.format((train_score*100)))
         
-        train_scores= gnb.score(X_train, y_train)
-        print(train_scores)
-        test_scores= gnb.score(X_test, y_test)
-        print(test_scores)
+        predicted_test= gnb.predict(X_test)
+        test_score= gnb.score(X_test, y_test)
+        print('X_test predictions: {}'.format(predicted_test))
+        print('y_test actual vals: {}'.format(y_test))
+        print('Test set score: {}%\n'.format((test_score*100)))
+
+        scores['fold'].append(i)
+        scores['gnb inner train'].append(train_score)
+        scores['gnb inner test'].append(test_score)
+        
     
+    with open('/media/james/ext4data1/current/projects/ramasubbu/gnbscores.pickle', 'wb') as d: pickle.dump(scores, d, pickle.HIGHEST_PROTOCOL) 
+
     return
 
 '''  
