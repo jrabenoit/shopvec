@@ -27,32 +27,26 @@ def CVSetup():
         for i in data:
             if data[i]['sx severity']==0: group0.append(i)
             if data[i]['sx severity']==1: group1.append(i)
-        labels= np.array([0]*len(group0)+[1]*len(group1))
     elif choice== 1:
         for i in data:
             if data[i]['sx severity']==0: group0.append(i)
             if data[i]['sx severity']==2: group1.append(i)
-        labels= np.array([0]*len(group0)+[1]*len(group1))
     elif choice== 2:
         for i in data:
             if data[i]['sx severity']==0: group0.append(i)
-            if data[i]['sx severity']==3: group1.append(i)
-        labels= np.array([0]*len(group0)+[1]*len(group1))    
+            if data[i]['sx severity']==3: group1.append(i)   
     elif choice== 3:
         for i in data:
             if data[i]['sx severity']==1: group0.append(i)
-            if data[i]['sx severity']==2: group1.append(i)
-        labels= np.array([0]*len(group0)+[1]*len(group1))        
+            if data[i]['sx severity']==2: group1.append(i)       
     elif choice== 4:
         for i in data:
             if data[i]['sx severity']==1: group0.append(i)
-            if data[i]['sx severity']==3: group1.append(i)
-        labels= np.array([0]*len(group0)+[1]*len(group1))        
+            if data[i]['sx severity']==3: group1.append(i)      
     elif choice== 5:
         for i in data:
             if data[i]['sx severity']==2: group0.append(i)
             if data[i]['sx severity']==3: group1.append(i)
-        labels= np.array([0]*len(group0)+[1]*len(group1))
     elif choice== 6:
         group1a=[]
         group1b=[]
@@ -62,13 +56,11 @@ def CVSetup():
             if data[i]['sx severity']==1: group1a.append(i)
             if data[i]['sx severity']==2: group1b.append(i)
             if data[i]['sx severity']==3: group1c.append(i)
-            group1= np.sort(np.append(group1a,np.append(group1b,group1c)))
-        labels= np.array([0]*len(group0)+[1]*len(group1))    
+            group1= np.sort(np.append(group1a,np.append(group1b,group1c)))   
     elif choice== 7:
         for i in data:
             if data[i]['tx response']==0: group0.append(i)
             if data[i]['tx response']==1: group1.append(i)
-        labels= np.array([0]*len(group0)+[1]*len(group1))
     elif choice== 8:
         group1a=[]
         group1b=[]
@@ -76,13 +68,11 @@ def CVSetup():
             if data[i]['tx response']==0: group0.append(i)
             if data[i]['tx response']==2: group1a.append(i)
             if data[i]['tx response']==3: group1a.append(i)
-            group1= np.sort(np.append(group1a,group1b))
-        labels= np.array([0]*len(group0)+[1]*len(group1))  
+            group1= np.sort(np.append(group1a,group1b))  
     elif choice== 9:
         for i in data:
             if data[i]['tx response']==0: group0.append(i)
             if data[i]['tx response']==3: group1.append(i)
-        labels= np.array([0]*len(group0)+[1]*len(group1))
     elif choice== 10:
         group1a=[]
         group1b=[]
@@ -90,18 +80,15 @@ def CVSetup():
             if data[i]['tx response']==1: group0.append(i)
             if data[i]['tx response']==2: group1a.append(i)
             if data[i]['tx response']==3: group1a.append(i)
-            group1= np.sort(np.append(group1a,group1b))
-        labels= np.array([0]*len(group0)+[1]*len(group1))      
+            group1= np.sort(np.append(group1a,group1b))      
     elif choice== 11:
         for i in data:
             if data[i]['tx response']==1: group0.append(i)
             if data[i]['tx response']==3: group1.append(i)
-        labels= np.array([0]*len(group0)+[1]*len(group1))
     elif choice== 12:
         for i in data:
             if data[i]['tx response']==2: group0.append(i)
-            if data[i]['tx response']==3: group1.append(i)
-        labels= np.array([0]*len(group0)+[1]*len(group1))    
+            if data[i]['tx response']==3: group1.append(i)  
     elif choice== 13:
         group1a=[]
         group1b=[]
@@ -112,11 +99,19 @@ def CVSetup():
             if data[i]['tx response']==2: group1a.append(i)
             if data[i]['tx response']==3: group1a.append(i)
             group1= np.sort(np.append(group1a,np.append(group1b,group1c)))
-        labels= np.array([0]*len(group0)+[1]*len(group1))  
-    else: print('invalid selection.')
+    else: print('Invalid selection.')
     
     group0.sort()
     group1.sort()
+    
+    if len(group0)>len(group1): 
+        group0=np.random.choice(group0, size=len(group1), replace= False) 
+        labels= np.array([0]*len(group0)+[1]*len(group1)) 
+    elif len(group0)<len(group1): 
+        group1=np.random.choice(group1, size=len(group0), replace= False)
+        labels= np.array([0]*len(group0)+[1]*len(group1)) 
+    
+    #For group 0 and 1, take n random subjects in the larger group where n=n_subjects in smaller group.    
     
     outer_cv={'X_train': [], 'X_test': [],
               'y_train': [], 'y_test': []}
@@ -163,7 +158,7 @@ def InnerCv():
     #read loop as, "for each pair of X and y lists in (X,y)"
     
     for X_, y_ in zip(X, y): 
-        skf = StratifiedKFold(n_splits=5)
+        skf = StratifiedKFold(n_splits=2)
         for train_index, test_index in skf.split(X_,y_):      
             X_train, X_test= X_[train_index], X_[test_index]
             y_train, y_test= y_[train_index], y_[test_index]

@@ -48,7 +48,7 @@ def SubjectInfo():
         data[i]['tx response']= j
                                       
     #CONCATENATED SCAN VECTORS
-    mask = '/media/james/ext4data/current/projects/depression/07_Machine_Learning/02_FA_Skeletonized/mean_FA_skeleton_mask.nii.gz'
+    mask = '/media/james/ext4data1/current/projects/depression/07_Machine_Learning/02_FA_Skeletonized/mean_FA_skeleton_mask.nii.gz'
     nifti_masker= NiftiMasker(mask_img=mask)
     stdscaler = preprocessing.StandardScaler(copy=True, with_mean=True, with_std=True)
     
@@ -69,7 +69,7 @@ def SubjectInfo():
         vector_of_scans=np.array(vector_of_scans[0::])
         print('Vector length: {}'.format(len(vector_of_scans)))
         #data[subject]['vector']=vector_of_scans
-        with open('/media/james/ext4data/current/projects/ramasubbu/vectors/'+subject+'.pickle', 'wb') as d:
+        with open('/media/james/ext4data1/current/projects/ramasubbu/vectors/'+subject+'.pickle', 'wb') as d:
             pickle.dump(vector_of_scans, d, pickle.HIGHEST_PROTOCOL) 
     
     

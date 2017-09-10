@@ -6,18 +6,15 @@ import numpy as np
 
 #Run feature selection. Data here need to be transformed because they'll be used in the ML step.
 
-def AllFeats():
-    return
-
 def SelKBest():
     with open('/media/james/ext4data1/current/projects/ramasubbu/data.pickle','rb') as f: data=pickle.load(f)
     with open('/media/james/ext4data1/current/projects/ramasubbu/inner_cv.pickle','rb') as f: inner_cv=pickle.load(f)       
 
 #i is for the number of inner CV fold, j is for each subject in that fold.
     
-    for i in range(25):
+    for i in range(10):
         X_train=[]
-        print('fold {}/25'.format(i+1))
+        print('fold {}/10'.format(i+1))
         for j in inner_cv['X_train'][i]:
             print('{}, {}'.format(j, len(X_train)))
             with open('/media/james/ext4data1/current/projects/ramasubbu/nonzerovectors/'+j+'.pickle','rb') as f: vecs=pickle.load(f)
@@ -36,7 +33,8 @@ def SelKBest():
          
         print('\nPicking and Transforming Features\n')
         #So here, we have to get an index of the chosen features, then pare down the train AND test sets to just those features.
-        skb= SelectKBest(k=20)  
+        #And we're using 9574 as the sqrt(91654728), the # of zero variance features remaining.
+        skb= SelectKBest(k=52)  
         skb.fit(X_train, y_train)
         feats=skb.get_support(indices=True)
         print('Feature indices:\n{}'.format(feats))
@@ -52,6 +50,7 @@ def SelKBest():
         with open('/media/james/ext4data1/current/projects/ramasubbu/innercvfeatures/fold_'+str(i)+'_test.pickle','wb') as f: pickle.dump(X_test, f, pickle.HIGHEST_PROTOCOL) 
         with open('/media/james/ext4data1/current/projects/ramasubbu/innercvfeatures/fold_'+str(i)+'_feats.pickle','wb') as f: pickle.dump(feats, f, pickle.HIGHEST_PROTOCOL)  
 
+    return
 
 def SelKBestOuter():
     with open('/media/james/ext4data1/current/projects/ramasubbu/data.pickle','rb') as f: data=pickle.load(f)
@@ -61,7 +60,7 @@ def SelKBestOuter():
     
     for i in range(5):
         X_train=[]
-        print('fold {}/25'.format(i+1))
+        print('fold {}/5'.format(i+1))
         for j in outer_cv['X_train'][i]:
             print('{}, {}'.format(j, len(X_train)))
             with open('/media/james/ext4data1/current/projects/ramasubbu/nonzerovectors/'+j+'.pickle','rb') as f: vecs=pickle.load(f)
@@ -80,7 +79,7 @@ def SelKBestOuter():
          
         print('\nPicking and Transforming Features\n')
         #So here, we have to get an index of the chosen features, then pare down the train AND test sets to just those features.
-        skb= SelectKBest(k=20)  
+        skb= SelectKBest(k=52)  
         skb.fit(X_train, y_train)
         feats=skb.get_support(indices=True)
         print('Feature indices:\n{}'.format(feats))
@@ -96,52 +95,4 @@ def SelKBestOuter():
         with open('/media/james/ext4data1/current/projects/ramasubbu/outercvfeatures/fold_'+str(i)+'_test.pickle','wb') as f: pickle.dump(X_test, f, pickle.HIGHEST_PROTOCOL) 
         with open('/media/james/ext4data1/current/projects/ramasubbu/outercvfeatures/fold_'+str(i)+'_feats.pickle','wb') as f: pickle.dump(feats, f, pickle.HIGHEST_PROTOCOL)  
 
-'''        
-        X_train= np.array([data[j]['vector'] for j in inner_cv['X_train'][i]])
-        X_test= np.array([data[j]['vector'] for j in inner_cv['X_test'][i]])
-        y_train= inner_cv['y_train'][i]
-        y_test= inner_cv['y_test'][i]
-        
-        print(X_train)
-        print(X_test)
-        print(y_train)
-        print(y_test)
-        
-        skb= SelectKBest(k=20)        
-        skb.fit_transform(X_train, y_train)
-        
-        k= 'fold ' + str(i)
-        features[k]= X_train
-    
-    with open('/media/james/ext4data/current/projects/ramasubbu/features.pickle','wb') as f:
-        pickle.dump(features, f, pickle.HIGHEST_PROTOCOL) 
-    
     return
-'''
-
-
-
-'''   
-def SelKBest(X_train, X_test, y_train, y_test, k=20):
-        with open('/media/james/ext4data/current/projects/ramasubbu/data_dict.pickle','rb') as f:
-        data_dict=pickle.load(f)
-    with open('/media/james/ext4data/current/projects/ramasubbu/inner_cv.pickle','rb') as f:
-        inner_cv=pickle.load(f)  
-
-    skb = SelectKBest(f_classif, k=k)
-    for i in range(25):
-        X_train= np.array([data_dict['data'][j] for j in inner_cv['X_train'][i]])
-        X_test= np.array([data_dict['data'][j] for j in inner_cv['X_test'][i]])
-        y_train= inner_cv['y_train'][i]
-        y_test= inner_cv['y_test'][i]
-    
-        skb = SelectKBest(f_classif, k=k)
-        skb.fit(fX_train, fy_train)
-        fX_train = skb.transform(fX_train)
-        fX_test = skb.transform(fX_test)
-
-    with open('/media/james/ext4data/current/projects/ramasubbu/data_dict.pickle','wb') as f:
-        pickle.dump(data_dict, f, pickle.HIGHEST_PROTOCOL) 
-        
-    return
-'''
