@@ -5,8 +5,8 @@ from collections import defaultdict
 import pprint, itertools
 import random
 
-def EmpiricalDistro(n_1, n_2, per_subject_test_acc):
-    sample_size = n_1 + n_2
+def EmpiricalDistro():
+    sample_size = int(input('\nSample size: '))*2
     sample_distro = []
     n_iterations = 10000
     for i in range(n_iterations):
@@ -17,5 +17,6 @@ def EmpiricalDistro(n_1, n_2, per_subject_test_acc):
         sample_distro.append(sample_mean)
     
     p_value = sum(i <= 50.0 for i in sample_distro)/n_iterations
+    print(p_value)
     
-    return p_value
+    return

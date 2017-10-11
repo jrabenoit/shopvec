@@ -7,7 +7,7 @@ from collections import defaultdict
 from sklearn.feature_selection import SelectKBest
 from sklearn.model_selection import StratifiedKFold
 
-def CVSetup():   
+def OuterCV():   
     
     with open('/media/james/ext4data1/current/projects/ramasubbu/data.pickle', 'rb') as f:
         data= pickle.load(f)
@@ -142,7 +142,7 @@ def CVSetup():
 
     return
     
-def InnerCv():
+def InnerCV():
     '''Set up as a flat structure of 25 df'''
     with open('/media/james/ext4data1/current/projects/ramasubbu/outer_cv.pickle', 'rb') as f: outer_cv= pickle.load(f)
 

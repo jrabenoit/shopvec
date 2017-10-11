@@ -46,12 +46,15 @@ def SubjectInfo():
          1,3,1,1,1,3,2,1,3,3,2,3,1,3,1,1,2,2,1,1,2,2,3,2,2,3,3,1,2,2,2,3,2,2]
     for i,j in zip(subjects, tx):
         data[i]['tx response']= j
-                                      
+
+    with open('/media/james/ext4data1/current/projects/ramasubbu/data.pickle', 'wb') as d:
+        pickle.dump(data, d, pickle.HIGHEST_PROTOCOL) 
+'''                                      
     #CONCATENATED SCAN VECTORS
     mask = '/media/james/ext4data1/current/projects/depression/07_Machine_Learning/02_FA_Skeletonized/mean_FA_skeleton_mask.nii.gz'
     nifti_masker= NiftiMasker(mask_img=mask)
     stdscaler = preprocessing.StandardScaler(copy=True, with_mean=True, with_std=True)
-    
+   
     for subject in data:
         print('\nSubject ID: {}'.format(subject))
         scans=[]
@@ -71,10 +74,9 @@ def SubjectInfo():
         #data[subject]['vector']=vector_of_scans
         with open('/media/james/ext4data1/current/projects/ramasubbu/vectors/'+subject+'.pickle', 'wb') as d:
             pickle.dump(vector_of_scans, d, pickle.HIGHEST_PROTOCOL) 
+'''    
     
     
-    #with open('/media/james/ext4data/current/projects/ramasubbu/data.pickle', 'wb') as d:
-    #    pickle.dump(data, d, pickle.HIGHEST_PROTOCOL) 
 
 #note: haven't done sklearn z-normalization yet- do with final multimodal array
 #    with open('/media/james/ext4data/current/projects/ramasubbu/data.pickle', 'rb') as f:

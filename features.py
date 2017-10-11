@@ -34,7 +34,7 @@ def SelKBest():
         print('\nPicking and Transforming Features\n')
         #So here, we have to get an index of the chosen features, then pare down the train AND test sets to just those features.
         #And we're using 9574 as the sqrt(91654728), the # of zero variance features remaining.
-        skb= SelectKBest(k=52)  
+        skb= SelectKBest(k=9574)  
         skb.fit(X_train, y_train)
         feats=skb.get_support(indices=True)
         print('Feature indices:\n{}'.format(feats))
@@ -79,7 +79,7 @@ def SelKBestOuter():
          
         print('\nPicking and Transforming Features\n')
         #So here, we have to get an index of the chosen features, then pare down the train AND test sets to just those features.
-        skb= SelectKBest(k=52)  
+        skb= SelectKBest(k=9574)  
         skb.fit(X_train, y_train)
         feats=skb.get_support(indices=True)
         print('Feature indices:\n{}'.format(feats))
