@@ -4,68 +4,59 @@ import numpy as np
 import copy, pickle
 from sklearn import svm, naive_bayes, neighbors, ensemble, linear_model, tree, discriminant_analysis
 
-def Highlander():
-    #Remember, 5 sets of changes to use different feature set...
-    #Change 1
-    with open('/media/james/ext4data1/current/projects/ramasubbu/inner_cv.pickle','rb') as f: cv=pickle.load(f)       
-    
-    scores={'fold': [], 'train':[], 'test':[]}
-    
-    #Change 2 & 3 & 4
-    for i in range(10): #<--2
-        #3
-        with open('/media/james/ext4data1/current/projects/ramasubbu/innercvfeatures/fold_'+str(i)+'_train.pickle','rb') as f:    
+def InnerFolds():
+    folds=10
+
+    for i in range(folds):
+        print('\nFold {}/{}\n'.format((i+1), folds))
+        
+        with open('/media/james/ext4data1/current/projects/ramasubbu/inner_cv.pickle','rb') as f: 
+            cv=pickle.load(f)
+        with open('/media/james/ext4data1/current/projects/ramasubbu/innercvfeatures/fold_'+str(i)+'_train.pickle','rb') as f: 
             X_train=pickle.load(f)
-        #4
-        with open('/media/james/ext4data1/current/projects/ramasubbu/innercvfeatures/fold_'+str(i)+'_test.pickle','rb') as f:
+        with open('/media/james/ext4data1/current/projects/ramasubbu/innercvfeatures/fold_'+str(i)+'_test.pickle','rb') as f: 
             X_test=pickle.load(f)
         
         y_train= cv['y_train'][i]
         y_test= cv['y_test'][i]
         
+        est= {'randomforest': ensemble.RandomForestClassifier(), 
+              'extratrees': censemble.ExtraTreesClassifier(),
+              'kneighbors': neighbors.KNeighborsClassifier(),
+              'naivebayes': naive_bayes.GaussianNB(),
+              'decisiontree': tree.DecisionTreeClassifier(),
+              'svm': svm.LinearSVC(),
+              'lda': discriminant_analysis.LinearDiscriminantAnalysis()
+              ]
         
-        #est= ensemble.RandomForestClassifier()
-        #est= ensemble.ExtraTreesClassifier()
-        #est= neighbors.KNeighborsClassifier()
-        #est= naive_bayes.GaussianNB()
-        #est= tree.DecisionTreeClassifier()
-        #est= svm.LinearSVC()
-        est= discriminant_analysis.LinearDiscriminantAnalysis()
+        train_results= {}
+        test_results= {}
         
-        est.fit(X_train, y_train)
-                
-        print('\nFold {}/10\n'.format((i+1)))
+        for j,k in est.keys(), est.values()):
+            k.fit(X_train, y_train)         
+            train_results[str(j)]= {'subject': [cv['X_train'][i]],
+                                    'fold': [[i]*len(cv['X_train'][i])], 
+                                    'label': [cv['y_train'][i]], 
+                                    'prediction': est.predict(X_train),
+                                    'score': est.score(X_train, y_train)
+                                    }
         
-        predicted_train= est.predict(X_train)
-        train_score= est.score(X_train, y_train)
-        print('X_train predictions: {}'.format(predicted_train))
-        print('y_train actual vals: {}'.format(y_train))        
-        print('Training set score: {}%\n'.format((train_score*100)))
+            test_results[str(j)]= {'subject': [cv['X_test'][i]],
+                                   'fold': [[i]*len(cv['X_test'][i])], 
+                                   'label': [cv['y_test'][i]], 
+                                   'prediction': est.predict(X_test)
+                                   'score': est.score(X_test, y_test) 
+                                   }
         
-        predicted_test= est.predict(X_test)
-        test_score= est.score(X_test, y_test)
-        print('X_test predictions: {}'.format(predicted_test))
-        print('y_test actual vals: {}'.format(y_test))
-        print('Baseline accuracy: {}'.format('50%'))
-        print('Test set score: {}%\n'.format((test_score*100)))
+    print('Combined acc per outer fold:\n{}'.format(np.add.reduceat(scores['test'], np.arange(0, folds, 2))*100/2))    
 
-        scores['fold'].append(i)
-        scores['train'].append(train_score)
-        scores['test'].append(test_score)
-                
-    #Change 5: switch all accs to total # of folds
-    print('All Train Average Acc: {}%'.format((sum(scores['train'])/10)*100))
-    print('All Test Average Acc: {}%'.format((sum(scores['test'])/10)*100))
-    #We can set this to 50% because of the stratified k-fold CV
-    print('All Test Expected Acc: {}%'.format('50%'))
-    # Leaving the following here in case we want per-fold accuracy: print('Expected acc per outer fold:\n{}'.format(np.add.reduceat(scores['expected'], np.arange(0, 10, 2))*100/5))
-    print('Combined acc per outer fold:\n{}'.format(np.add.reduceat(scores['test'], np.arange(0, 10, 2))*100/2))    
-        
-    with open('/media/james/ext4data1/current/projects/ramasubbu/est_scores.pickle', 'wb') as d: pickle.dump(scores, d, pickle.HIGHEST_PROTOCOL) 
 
+#>>>WORK ON SYNTAX A BIT THIS SHOULD GO INTO ONE DICT FOR ALL FOLDS<<<        
+    with open('/media/james/ext4data1/current/projects/ramasubbu/train_results_fold_'+str(i)+'.pickle', 'wb') as d: pickle.dump(train_results, d, pickle.HIGHEST_PROTOCOL) 
+    with open('/media/james/ext4data1/current/projects/ramasubbu/test_results_fold_'+str(i)+'.pickle', 'wb') as d: pickle.dump(scores, d, pickle.HIGHEST_PROTOCOL) 
     return
     
-def Quickening():
+def OuterFolds():
     with open('/media/james/ext4data1/current/projects/ramasubbu/outer_cv.pickle','rb') as f: cv=pickle.load(f)       
     
     scores={'fold': [], 'train':[], 'test':[]}
