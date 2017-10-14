@@ -5,55 +5,54 @@ import copy, pickle
 from sklearn import svm, naive_bayes, neighbors, ensemble, linear_model, tree, discriminant_analysis
 
 def InnerFolds():
-    folds=10
+    with open('/media/james/ext4data1/current/projects/ramasubbu/inner_cv.pickle','rb') as f: cv=pickle.load(f)
 
+    folds=10
+    
+    est= {'randomforest': ensemble.RandomForestClassifier(), 
+          'extratrees': ensemble.ExtraTreesClassifier(),
+          'kneighbors': neighbors.KNeighborsClassifier(),
+          'naivebayes': naive_bayes.GaussianNB(),
+          'decisiontree': tree.DecisionTreeClassifier(),
+          'linearsvm': svm.LinearSVC(),
+          'lda': discriminant_analysis.LinearDiscriminantAnalysis()
+          }
+   
+    train_results={'fold':[], 'estimator':[], 'subjects':[], 'labels':[], 'predictions':[], 'scores':[]}
+    test_results={}
+   
     for i in range(folds):
-        print('\nFold {}/{}\n'.format((i+1), folds))
+        with open('/media/james/ext4data1/current/projects/ramasubbu/innercvfeatures/fold_'+str(i)+'_train.pickle','rb') as f: X_train=pickle.load(f)
+        with open('/media/james/ext4data1/current/projects/ramasubbu/innercvfeatures/fold_'+str(i)+'_test.pickle','rb') as f: X_test=pickle.load(f)
+                
+        fold=[str(i+1)]*len(cv['X_train'][i])
+        subjects= cv['X_train'][i]
+        labels= cv['y_train'][i]
         
-        with open('/media/james/ext4data1/current/projects/ramasubbu/inner_cv.pickle','rb') as f: 
-            cv=pickle.load(f)
-        with open('/media/james/ext4data1/current/projects/ramasubbu/innercvfeatures/fold_'+str(i)+'_train.pickle','rb') as f: 
-            X_train=pickle.load(f)
-        with open('/media/james/ext4data1/current/projects/ramasubbu/innercvfeatures/fold_'+str(i)+'_test.pickle','rb') as f: 
-            X_test=pickle.load(f)
+        print('\nFold {}/{}\n'.format(i+1, folds))   
         
         y_train= cv['y_train'][i]
         y_test= cv['y_test'][i]
         
-        est= {'randomforest': ensemble.RandomForestClassifier(), 
-              'extratrees': censemble.ExtraTreesClassifier(),
-              'kneighbors': neighbors.KNeighborsClassifier(),
-              'naivebayes': naive_bayes.GaussianNB(),
-              'decisiontree': tree.DecisionTreeClassifier(),
-              'svm': svm.LinearSVC(),
-              'lda': discriminant_analysis.LinearDiscriminantAnalysis()
-              ]
+        for j,k in zip(est.keys(), est.values()):
+            k.fit(X_train, y_train)
+            estimator=[j]*len(subjects)
+            predictions= k.predict(X_train)
+            scores= [1 if x==y else 0 for x,y in zip(labels, predictions)]
+            print(scores)
+            train_results['fold'].extend(fold)
+            train_results['estimator'].extend(estimator)
+            train_results['subjects'].extend(subjects)
+            train_results['labels'].extend(labels)
+            train_results['predictions'].extend(predictions)
+            train_results['scores'].extend(scores)
+                          
         
-        train_results= {}
-        test_results= {}
-        
-        for j,k in est.keys(), est.values()):
-            k.fit(X_train, y_train)         
-            train_results[str(j)]= {'subject': [cv['X_train'][i]],
-                                    'fold': [[i]*len(cv['X_train'][i])], 
-                                    'label': [cv['y_train'][i]], 
-                                    'prediction': est.predict(X_train),
-                                    'score': est.score(X_train, y_train)
-                                    }
-        
-            test_results[str(j)]= {'subject': [cv['X_test'][i]],
-                                   'fold': [[i]*len(cv['X_test'][i])], 
-                                   'label': [cv['y_test'][i]], 
-                                   'prediction': est.predict(X_test)
-                                   'score': est.score(X_test, y_test) 
-                                   }
-        
-    print('Combined acc per outer fold:\n{}'.format(np.add.reduceat(scores['test'], np.arange(0, folds, 2))*100/2))    
+    #print('Test accuracies:\n{}'.format(np.add.reduceat(test_results['test'], np.arange(0, folds, 2))*100/2))    
 
+    with open('/media/james/ext4data1/current/projects/ramasubbu/train_results.pickle', 'wb') as d: pickle.dump(train_results, d, pickle.HIGHEST_PROTOCOL) 
+    with open('/media/james/ext4data1/current/projects/ramasubbu/test_results.pickle', 'wb') as d: pickle.dump(test_results, d, pickle.HIGHEST_PROTOCOL) 
 
-#>>>WORK ON SYNTAX A BIT THIS SHOULD GO INTO ONE DICT FOR ALL FOLDS<<<        
-    with open('/media/james/ext4data1/current/projects/ramasubbu/train_results_fold_'+str(i)+'.pickle', 'wb') as d: pickle.dump(train_results, d, pickle.HIGHEST_PROTOCOL) 
-    with open('/media/james/ext4data1/current/projects/ramasubbu/test_results_fold_'+str(i)+'.pickle', 'wb') as d: pickle.dump(scores, d, pickle.HIGHEST_PROTOCOL) 
     return
     
 def OuterFolds():
