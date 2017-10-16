@@ -40,6 +40,6 @@ def Bill(group, run):
     #plt.hist(distribution, bins=list(range(0,101)))
     #plt.show()
     
-    with open('/media/james/ext4data1/current/projects/ramasubbu/bootstrap_results_group_'+str(group)+'_run_'+str(run)'.pickle', 'wb') as d: pickle.dump(train_results, d, pickle.HIGHEST_PROTOCOL) 
+    with open('/media/james/ext4data1/current/projects/ramasubbu/bootstrap_results_group_'+str(group)+'_run_'+str(run)+'.pickle', 'wb') as d: pickle.dump(train_results, d, pickle.HIGHEST_PROTOCOL) 
     
     return
