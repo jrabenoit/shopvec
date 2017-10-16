@@ -18,17 +18,16 @@ def Vecuum():
     for i in range(runs):    
         print('BEGINNING RUN {}/{}'.format(run, runs))
 
-        print('CROSSVAL')
         crossval.OuterCV(group)
         crossval.InnerCV()
         
-        print('FEATURES')
         features.SelKBest()
         features.SelKBestOuter()
-        
-        print('ESTIMATORS')
+
         estimators.InnerFolds(group, run)
-        estimators.OuterFolds(group, run)
+        bestest= estpicker.Best(group, run)
+        
+        estimators.OuterFolds(group, run, bestest)
         
         print('BOOTSTRAP')
         bootstrap.Bill(group, run)

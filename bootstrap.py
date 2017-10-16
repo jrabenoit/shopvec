@@ -8,7 +8,7 @@ import pprint, itertools, pickle, random, statistics
 #Because we are sampling with replacement, we don't need to worry about the program picking all subjects each time... some may be picked more than once, and the total number of samples will be equal to the number of subjects.
 
 def Bill(group, run):
-    with open('/media/james/ext4data1/current/projects/ramasubbu/inner_test_results_group_'+str(group)+'_run_'+str(run)+'.pickle','rb') as f: inner_test=pickle.load(f)
+    with open('/media/james/ext4data1/current/projects/ramasubbu/outer_test_results_group_'+str(group)+'_run_'+str(run)+'.pickle','rb') as f: inner_test=pickle.load(f)
     
     #Per subject accuracy
     g=inner_test.groupby('subjects')    
@@ -25,7 +25,7 @@ def Bill(group, run):
     dist_mean= sum(distribution)/len(distribution)
     p_value= sum(i<=50 for i in distribution)/runs
     
-    print('{} runs of {} samples'.format(len(distribution), n))
+    print('{} runs, {} samples per run'.format(len(distribution), n))
     print('distribution mean: {}%'.format(dist_mean))
     print('p-value: {}'.format(p_value))
     
