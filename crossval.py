@@ -7,20 +7,11 @@ from collections import defaultdict
 from sklearn.feature_selection import SelectKBest
 from sklearn.model_selection import StratifiedKFold
 
-def OuterCV():   
+def OuterCV(choice):   
     
     with open('/media/james/ext4data1/current/projects/ramasubbu/data.pickle', 'rb') as f:
         data= pickle.load(f)
     
-    print('\nSymptom Severity:\n')
-    print(' 0= control/mild\n 1= control/severe\n 2= control/very severe\n 3= mild/severe\n 4= mild/very severe\n 5= severe/very severe\n 6= control/all patients\n')
-    
-    print('Treatment Response:\n')
-    print(' 7= control/non-responder\n 8= control/all responder\n 9= control/remitter only\n 10= non-responder/all responder\n 11= non-responder/remitter only\n 12= responder vs remitter\n 13= control/all patients')
-    
-    print('\nStudy contains {} Subjects'.format(len(data)))
-    choice= int(input('\nChoice: '))
-        
     group0=[]
     group1=[]
     if choice== 0:

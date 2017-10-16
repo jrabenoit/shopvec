@@ -5,7 +5,7 @@ import pandas as pd
 import copy, pickle
 from sklearn import svm, naive_bayes, neighbors, ensemble, linear_model, tree, discriminant_analysis
 
-def InnerFolds():
+def InnerFolds(group, run):
     with open('/media/james/ext4data1/current/projects/ramasubbu/inner_cv.pickle','rb') as f: cv=pickle.load(f)
 
     folds=10
@@ -59,23 +59,23 @@ def InnerFolds():
     train_results=pd.DataFrame(train_results)
     test_results=pd.DataFrame(test_results)
     
-    with open('/media/james/ext4data1/current/projects/ramasubbu/inner_train_results.pickle', 'wb') as d: pickle.dump(train_results, d, pickle.HIGHEST_PROTOCOL) 
-    with open('/media/james/ext4data1/current/projects/ramasubbu/inner_test_results.pickle', 'wb') as d: pickle.dump(test_results, d, pickle.HIGHEST_PROTOCOL) 
+    with open('/media/james/ext4data1/current/projects/ramasubbu/inner_train_results_group_'+str(group)+'_run_'+str(run)+'.pickle', 'wb') as d: pickle.dump(train_results, d, pickle.HIGHEST_PROTOCOL) 
+    with open('/media/james/ext4data1/current/projects/ramasubbu/inner_test_results_group_'+str(group)+'_run_'+str(run)+'.pickle', 'wb') as d: pickle.dump(test_results, d, pickle.HIGHEST_PROTOCOL) 
 
     return
 
-def OuterFolds():
+def OuterFolds(group, run):
     with open('/media/james/ext4data1/current/projects/ramasubbu/outer_cv.pickle','rb') as f: cv=pickle.load(f)
 
     folds=5
     
-    est= {#'randomforest': ensemble.RandomForestClassifier(), 
-          #'extratrees': ensemble.ExtraTreesClassifier(),
-          #'kneighbors': neighbors.KNeighborsClassifier(),
+    est= {'randomforest': ensemble.RandomForestClassifier(), 
+          'extratrees': ensemble.ExtraTreesClassifier(),
+          'kneighbors': neighbors.KNeighborsClassifier(),
           'naivebayes': naive_bayes.GaussianNB(),
-          #'decisiontree': tree.DecisionTreeClassifier(),
-          #'linearsvm': svm.LinearSVC(),
-          #'lda': discriminant_analysis.LinearDiscriminantAnalysis()
+          'decisiontree': tree.DecisionTreeClassifier(),
+          'linearsvm': svm.LinearSVC(),
+          'lda': discriminant_analysis.LinearDiscriminantAnalysis()
           }
    
     train_results={'fold':[], 'estimator':[], 'subjects':[], 'labels':[], 'predictions':[], 'scores':[]}
@@ -122,7 +122,7 @@ def OuterFolds():
     train_results=pd.DataFrame(train_results)
     test_results=pd.DataFrame(test_results)
     
-    with open('/media/james/ext4data1/current/projects/ramasubbu/outer_train_results.pickle', 'wb') as d: pickle.dump(train_results, d, pickle.HIGHEST_PROTOCOL) 
-    with open('/media/james/ext4data1/current/projects/ramasubbu/outer_test_results.pickle', 'wb') as d: pickle.dump(test_results, d, pickle.HIGHEST_PROTOCOL) 
+    with open('/media/james/ext4data1/current/projects/ramasubbu/outer_train_results_group_'+str(group)+'_run_'+str(run)+'.pickle', 'wb') as d: pickle.dump(train_results, d, pickle.HIGHEST_PROTOCOL) 
+    with open('/media/james/ext4data1/current/projects/ramasubbu/outer_test_results_group_'+str(group)+'_run_'+str(run)+'.pickle', 'wb') as d: pickle.dump(test_results, d, pickle.HIGHEST_PROTOCOL) 
 
     return
