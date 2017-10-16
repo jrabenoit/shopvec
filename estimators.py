@@ -32,37 +32,29 @@ def InnerFolds():
 
         for j,k in zip(est.keys(), est.values()):
             k.fit(X_train, y_train)
-            fold=[str(i+1)]*len(cv['X_train'][i])  
-            estimator=[j]*len(cv['X_train'][i])
-            subjects= cv['X_train'][i]
-            labels= cv['y_train'][i]
             predictions= k.predict(X_train)
-            scores= [1 if x==y else 0 for x,y in zip(labels, predictions)]
-            attempts=[1]*len(cv['X_train'][i])
-            train_results['fold'].extend(fold)
-            train_results['estimator'].extend(estimator)
-            train_results['subjects'].extend(subjects)
-            train_results['labels'].extend(labels)
+            scores= [1 if x==y else 0 for x,y in zip(cv['y_train'][i], predictions)]
+            
+            train_results['fold'].extend([i+1]*len(X_train))
+            train_results['estimator'].extend([j]*len(X_train))
+            train_results['subjects'].extend(cv['X_train'][i])
+            train_results['labels'].extend(cv['y_train'][i])
             train_results['predictions'].extend(predictions)
             train_results['scores'].extend(scores)
-            train_results['attempts'].extend(attempts)
+            train_results['attempts'].extend([1]*len(X_train))
         
         for j,k in zip(est.keys(), est.values()):    
             k.fit(X_test, y_test)
-            fold=[str(i+1)]*len(cv['X_test'][i])  
-            estimator=[j]*len(cv['X_test'][i])
-            subjects= cv['X_test'][i]
-            labels= cv['y_test'][i]
             predictions= k.predict(X_test)
-            scores= [1 if x==y else 0 for x,y in zip(labels, predictions)]
-            attempts=[1]*len(cv['X_test'][i])
-            test_results['fold'].extend(fold)
-            test_results['estimator'].extend(estimator)
-            test_results['subjects'].extend(subjects)
-            test_results['labels'].extend(labels)
+            scores= [1 if x==y else 0 for x,y in zip(cv['y_test'][i], predictions)]
+            
+            test_results['fold'].extend([i+1]*len(X_test))
+            test_results['estimator'].extend([j]*len(X_test))
+            test_results['subjects'].extend(cv['X_test'][i])
+            test_results['labels'].extend(cv['y_test'][i])
             test_results['predictions'].extend(predictions)
-            test_results['scores'].extend(scores)                   
-            test_results['attempts'].extend(attempts)
+            test_results['scores'].extend(scores)
+            test_results['attempts'].extend([1]*len(X_test))
 
     train_results=pd.DataFrame(train_results)
     test_results=pd.DataFrame(test_results)
