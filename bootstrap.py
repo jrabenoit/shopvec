@@ -29,7 +29,7 @@ def Bill(group, run):
     print('distribution mean: {}%'.format(dist_mean))
     print('p-value: {}'.format(p_value))
     
-    bootstrap_results= {'subjects': n, 
+    bootstrap_results= {'samples per run': n, 
                         'runs': 10000, 
                         'distribution mean': dist_mean, 
                         'p-value': p_value

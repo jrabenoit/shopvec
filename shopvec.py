@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 
-import crossval, features, estimators, bootstrap
+import crossval, features, estimators, estpicker, bootstrap
 
 def Vecuum():
     
@@ -35,7 +35,7 @@ def Vecuum():
         print('RUN COMPLETE')
         run= run + 1
 
-    os.system('spd-say -r -50 -p -50 -t female3 "your program is finished running"')
+    os.system('spd-say -r -50 -p -50 -t female3 "your groups have finished running. To run more groups, you must construct additional pylons."')
     
     return
 
