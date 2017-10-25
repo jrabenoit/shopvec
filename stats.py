@@ -1,7 +1,9 @@
 #!/usr/bin/env python3
 
-import pickle, os
-
+import matplotlib.pyplot as plt
+import pandas as pd
+import numpy as np
+import pickle, os, statistics
 
 def agglomerate():
     
@@ -14,6 +16,11 @@ def agglomerate():
         with open('/media/james/ext4data1/current/projects/ramasubbu/oct_24_results/bootstrap_results/'+i,'rb') as f: result= pickle.load(f)
         results.append(result)
         
-    results.sort_values('p-value')    
+    results=pd.DataFrame(results)    
+    results=results.sort_values('p-value')    
+
+    res=results.loc[:,'p-value']
+    res.plot()
+    plt.show()
         
     return     
