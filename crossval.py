@@ -1,11 +1,12 @@
 #!/usr/bin/env python3
 
-import pprint, itertools, pickle
+import itertools, pickle
 import numpy as np
 import pandas as pd
 from collections import defaultdict
 from sklearn.feature_selection import SelectKBest
 from sklearn.model_selection import StratifiedKFold
+from sklearn.model_selection import LeaveOneOut
 
 def OuterCV(choice):   
     
@@ -112,7 +113,7 @@ def OuterCV(choice):
     
     X_train, X_test, y_train, y_test= [], [], [], []      
 
-    skf = StratifiedKFold(n_splits=5)
+    skf = StratifiedKFold(n_splits=3)
     
     print('\nGroup size: {}, group0: {}, group1: {}'.format(len(X), len(group0), len(group1)))
     print('Group indices: {}'.format(X))
@@ -149,8 +150,10 @@ def InnerCV():
     #read loop as, "for each pair of X and y lists in (X,y)"
     
     for X_, y_ in zip(X, y): 
-        skf = StratifiedKFold(n_splits=2)
-        for train_index, test_index in skf.split(X_,y_):      
+        #changed to loocv for inner folds to boost train set
+        loo= LeaveOneOut()
+        #skf = StratifiedKFold(n_splits=2)
+        for train_index, test_index in loo.split(X_,y_):      
             X_train, X_test= X_[train_index], X_[test_index]
             y_train, y_test= y_[train_index], y_[test_index]
 

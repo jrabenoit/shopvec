@@ -8,7 +8,7 @@ from sklearn import svm, naive_bayes, neighbors, ensemble, linear_model, tree, d
 def InnerFolds(group, run):
     with open('/media/james/ext4data1/current/projects/ramasubbu/inner_cv.pickle','rb') as f: cv=pickle.load(f)
 
-    folds=10
+    folds= len(cv[X_train])
     
     est= {'randomforest': ensemble.RandomForestClassifier(), 
           #'extratrees': ensemble.ExtraTreesClassifier(),
@@ -63,7 +63,7 @@ def InnerFolds(group, run):
 def OuterFolds(group, run, bestest):
     with open('/media/james/ext4data1/current/projects/ramasubbu/outer_cv.pickle','rb') as f: cv=pickle.load(f)
 
-    folds=5
+    folds=3
     
     est= {'randomforest': ensemble.RandomForestClassifier(), 
           'extratrees': ensemble.ExtraTreesClassifier(),

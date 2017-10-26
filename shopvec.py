@@ -15,7 +15,7 @@ def Vecuum():
     groups= [2,1,0,
             4,3,5,
             11,10,12]
-    runs=10
+    runs=5
 
     for group in groups:
         run=1
